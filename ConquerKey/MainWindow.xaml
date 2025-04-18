@@ -7,13 +7,10 @@
         mc:Ignorable="d"
 
         Title="MainWindow" Height="450" Width="800">
-    <Canvas>
-        <Border BorderBrush="Black" BorderThickness="1" CornerRadius="5">
-            <!-- Add your content here -->
-            <Grid>
-
-            </Grid>
-        </Border>
-    </Canvas>
-
+    <Grid>
+        <TextBlock
+            Text="Open any application and then press Ctrl+Windows+T to activate the hint window.&#x0a;Select the element you want to interact with and then press Enter"
+            FontSize="16">
+        </TextBlock>
+    </Grid>
 </Window>
