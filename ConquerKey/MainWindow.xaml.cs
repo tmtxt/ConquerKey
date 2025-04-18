@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -18,10 +20,18 @@ namespace ConquerKey;
 /// </summary>
 public partial class MainWindow : Window
 {
+	private static IntPtr _hookID = IntPtr.Zero;
+	private TextBox _textBox;
+
 	public MainWindow()
 	{
 		InitializeComponent();
 		Loaded += MainWindow_Loaded;
+	}
+
+	private void MainWindow_Closed(object sender, EventArgs e)
+	{
+		UnhookWindowsHookEx(_hookID);
 	}
 
 	private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -47,7 +57,7 @@ public partial class MainWindow : Window
 			AddHintText(clickableElement, index, rootElement);
 		}
 
-		var textBox = new TextBox
+		_textBox = new TextBox
 		{
 			//Text = "",
 			Width = 200,
@@ -57,26 +67,26 @@ public partial class MainWindow : Window
 			Background = Brushes.LightGray,
 			Foreground = Brushes.Black
 		};
-		Canvas.SetLeft(textBox, 0); // X-coordinate
-		Canvas.SetTop(textBox, Height - 30); // Y-coordinate
+		Canvas.SetLeft(_textBox, 0); // X-coordinate
+		Canvas.SetTop(_textBox, Height - 30); // Y-coordinate
 		// Add the TextBlock to the Canvas
 		if (Content is Canvas canvas)
 		{
-			canvas.Children.Add(textBox);
+			canvas.Children.Add(_textBox);
 		}
 
-		textBox.PreviewTextInput += (s, evt) =>
+		_textBox.PreviewTextInput += (s, evt) =>
 		{
 			evt.Handled = !int.TryParse(evt.Text, out _);
 		};
 
-		textBox.KeyDown += (s, evt) =>
+		_textBox.KeyDown += (s, evt) =>
 		{
 			if (evt.Key != Key.Enter) return;
 
 			// Handle the Enter key press here
 			// MessageBox.Show($"You pressed Enter. Text: {textBox.Text}");
-			var clickableElement = clickableElements[int.Parse(textBox.Text)];
+			var clickableElement = clickableElements[int.Parse(_textBox.Text)];
 			if (clickableElement.TryGetCurrentPattern(InvokePattern.Pattern, out object pattern))
 			{
 				((InvokePattern)pattern).Invoke(); // Perform the click
@@ -85,8 +95,43 @@ public partial class MainWindow : Window
 			evt.Handled = true; // Mark the event as handled if necessary
 		};
 
-		Activate();
-		textBox.Focus();
+		// Activate();
+		_textBox.Focus();
+
+		_hookID = SetHook(HookCallback);
+	}
+
+	private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+	{
+		if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
+		{
+			int vkCode = Marshal.ReadInt32(lParam);
+			if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) &&
+				(Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)) &&
+				(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) &&
+				vkCode == KeyInterop.VirtualKeyFromKey(Key.T))
+			{
+				Application.Current.Dispatcher.Invoke(() =>
+				{
+					var mainWindow = Application.Current.MainWindow as MainWindow;
+					if (mainWindow != null)
+					{
+						mainWindow.Topmost = true;
+						mainWindow.Activate();
+					}
+				});
+			}
+		}
+		return CallNextHookEx(_hookID, nCode, wParam, lParam);
+	}
+
+	private static IntPtr SetHook(LowLevelKeyboardProc proc)
+	{
+		using (var curProcess = Process.GetCurrentProcess())
+		using (var curModule = curProcess.MainModule)
+		{
+			return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
+		}
 	}
 
 	private void AddHintText(AutomationElement clickableElement, int index, AutomationElement rootElement)
@@ -123,6 +168,11 @@ public partial class MainWindow : Window
 			new PropertyCondition(AutomationElement.NameProperty, windowTitle));
 	}
 
+	/// <summary>
+	/// Need to update this method. Currently, it doesn't find all the elements on CW1 UI
+	/// </summary>
+	/// <param name="rootElement"></param>
+	/// <returns></returns>
 	private AutomationElementCollection FindClickableElements(AutomationElement rootElement)
 	{
 		// Define a condition to find elements that are clickable
@@ -142,4 +192,22 @@ public partial class MainWindow : Window
 
 		return clickableElements;
 	}
+
+	private const int WH_KEYBOARD_LL = 13;
+	private const int WM_KEYDOWN = 0x0100;
+
+	private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+	[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+	private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
+
+	[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+
+	[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+	private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+	[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+	private static extern IntPtr GetModuleHandle(string lpModuleName);
 }
