@@ -67,7 +67,12 @@ public static class WindowUtilities {
 			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.ComboBox),
 			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.ListItem),
 			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.DataItem),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem)
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.List),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Menu),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TreeItem),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Table),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.DataGrid)
 			);
 		var finalCondition = new AndCondition(
 			controlElementCondition,
