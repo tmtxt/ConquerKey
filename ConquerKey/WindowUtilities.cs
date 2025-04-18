@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace ConquerKey;
 
@@ -32,5 +33,12 @@ public static class WindowUtilities {
 	{
 		IntPtr foregroundWindow = User32Interop.GetForegroundWindow();
 		return AutomationElement.FromHandle(foregroundWindow);
+	}
+
+	public static double PixelToDeviceIndependentUnit(Window window, double pixel, bool isVertical)
+	{
+		const double defaultDpi = 96.0;
+		var pixelPerInch = isVertical ? VisualTreeHelper.GetDpi(window).PixelsPerInchY : VisualTreeHelper.GetDpi(window).PixelsPerInchX;
+		return pixel * (defaultDpi / pixelPerInch);
 	}
 }
