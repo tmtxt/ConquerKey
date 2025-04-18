@@ -119,8 +119,8 @@ public partial class HintWindow : Window
 				Padding = new Thickness(0),
 			};
 
-			var x = clickableElement.Current.BoundingRectangle.X - _activeWindow.Current.BoundingRectangle.X;
-			var y = clickableElement.Current.BoundingRectangle.Y - _activeWindow.Current.BoundingRectangle.Y;
+			var x = WindowUtilities.PixelToDeviceIndependentUnit(this, clickableElement.Current.BoundingRectangle.X - _activeWindow.Current.BoundingRectangle.X, false);
+			var y = WindowUtilities.PixelToDeviceIndependentUnit(this, clickableElement.Current.BoundingRectangle.Y - _activeWindow.Current.BoundingRectangle.Y, true);
 
 			// Set the absolute position
 			Canvas.SetLeft(textBlock, x); // X-coordinate
