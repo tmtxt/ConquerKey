@@ -18,7 +18,6 @@ namespace ConquerKey;
 /// </summary>
 public partial class MainWindow : Window
 {
-
 	public MainWindow()
 	{
 		InitializeComponent();
@@ -27,7 +26,8 @@ public partial class MainWindow : Window
 
 	private void MainWindow_Loaded(object sender, RoutedEventArgs e)
 	{
-		string windowTitle = "CargoWise Next - ediProd - Branch: Sydney Aust Branch - Company: WiseTech Global (Australia) Pty Ltd - Department: Development";
+		string windowTitle =
+			"CargoWise Next - ediProd - Branch: Sydney Aust Branch - Company: WiseTech Global (Australia) Pty Ltd - Department: Development";
 		var rootElement = GetRootElementByWindowTitle(windowTitle);
 
 		// Add your logic here
@@ -39,22 +39,35 @@ public partial class MainWindow : Window
 		Left = rootElement.Current.BoundingRectangle.X * (96.0 / VisualTreeHelper.GetDpi(this).PixelsPerInchX);
 		Top = rootElement.Current.BoundingRectangle.Y * (96.0 / VisualTreeHelper.GetDpi(this).PixelsPerInchY);
 
-		var clickableElements = FindClickableElements(rootElement);
+		AutomationElementCollection clickableElements = FindClickableElements(rootElement);
+		for (var index = 0; index < clickableElements.Count; index++)
+		{
+			var clickableElement = clickableElements[index];
+			AddHintText(clickableElement, index, rootElement);
+		}
+	}
 
+	private void AddHintText(AutomationElement clickableElement, int index, AutomationElement rootElement)
+	{
 		// Add your logic here
 		var textBlock = new TextBlock
 		{
-			Text = "Hello, World!",
+			Text = index.ToString(),
 			Foreground = Brushes.Black,
-			FontSize = 16,
-			Background = Brushes.Aqua
+			FontSize = 12,
+			Background = Brushes.Aqua,
+			Margin = new Thickness(0),
+			Padding = new Thickness(0)
 		};
 
-// Set the absolute position
-		Canvas.SetLeft(textBlock, 100); // X-coordinate
-		Canvas.SetTop(textBlock, 50);  // Y-coordinate
+		var x = clickableElement.Current.BoundingRectangle.X - rootElement.Current.BoundingRectangle.X;
+		var y = clickableElement.Current.BoundingRectangle.Y - rootElement.Current.BoundingRectangle.Y;
 
-// Add the TextBlock to the Canvas
+		// Set the absolute position
+		Canvas.SetLeft(textBlock, x); // X-coordinate
+		Canvas.SetTop(textBlock, y); // Y-coordinate
+
+		// Add the TextBlock to the Canvas
 		if (Content is Canvas canvas)
 		{
 			canvas.Children.Add(textBlock);
