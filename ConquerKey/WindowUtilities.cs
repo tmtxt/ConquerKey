@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Interop;
 using System.Windows.Media;
+using Condition = System.Windows.Automation.Condition;
 
 namespace ConquerKey;
 
@@ -56,13 +57,28 @@ public static class WindowUtilities {
 			new PropertyCondition(AutomationElement.IsInvokePatternAvailableProperty, true)
 		);
 		var visibleCondition = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
+		var controlElementCondition = new OrCondition(
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Hyperlink),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Tab),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.CheckBox),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.RadioButton),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Edit),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.ComboBox),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.ListItem),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.DataItem),
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem)
+			);
 		var finalCondition = new AndCondition(
-			clickableCondition,
+			controlElementCondition,
 			visibleCondition
 		);
 
+
 		// Find all matching elements
 		var clickableElements = rootElement.FindAll(TreeScope.Descendants, finalCondition);
+		var count = clickableElements.Count;
 
 		return clickableElements;
 	}

@@ -2,7 +2,9 @@
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
+using Brushes = System.Windows.Media.Brushes;
+using Label = System.Windows.Controls.Label;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace ConquerKey;
 
@@ -69,6 +71,8 @@ public partial class HintWindow : Window
 		{
 			if (evt.Key != Key.Enter) return;
 
+			Close();
+
 			// Handle the Enter key press here
 			// MessageBox.Show($"You pressed Enter. Text: {textBox.Text}");
 			var clickableElement = _clickableElements[int.Parse(_hintTextBox.Text)];
@@ -76,7 +80,17 @@ public partial class HintWindow : Window
 			{
 				((InvokePattern)pattern).Invoke(); // Perform the click
 			}
-			Close();
+			else
+			{
+				var rect = clickableElement.Current.BoundingRectangle;
+				var x = (int)(rect.X + rect.Width / 2);
+				var y = (int)(rect.Y + rect.Height / 2);
+
+				System.Windows.Forms.Cursor.Position = new System.Drawing.Point(x, y);
+				System.Windows.Forms.SendKeys.SendWait("{ENTER}"); // Simulate pressing Enter or a click
+			}
+
+
 
 			evt.Handled = true; // Mark the event as handled if necessary
 		};

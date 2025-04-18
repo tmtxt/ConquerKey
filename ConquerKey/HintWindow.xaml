@@ -10,7 +10,7 @@
         Background="Transparent"
         Title="HintWindow" Height="450" Width="800">
     <Canvas>
-        <Border BorderBrush="Black" BorderThickness="1" CornerRadius="5">
+        <Border BorderBrush="White" BorderThickness="10" CornerRadius="5">
             <!-- Add your content here -->
             <Grid>
             </Grid>
