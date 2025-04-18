@@ -14,29 +14,17 @@ public static class WindowUtilities {
 	{
 		var hwnd = new WindowInteropHelper(window).EnsureHandle();
 
-		var threadId1 = GetWindowThreadProcessId(GetForegroundWindow(), IntPtr.Zero);
-		var threadId2 = GetWindowThreadProcessId(hwnd, IntPtr.Zero);
+		var threadId1 = User32Interop.GetWindowThreadProcessId(User32Interop.GetForegroundWindow(), IntPtr.Zero);
+		var threadId2 = User32Interop.GetWindowThreadProcessId(hwnd, IntPtr.Zero);
 
 		if (threadId1 != threadId2)
 		{
-			AttachThreadInput(threadId1, threadId2, true);
-			SetForegroundWindow(hwnd);
-			AttachThreadInput(threadId1, threadId2, false);
+			User32Interop.AttachThreadInput(threadId1, threadId2, true);
+			User32Interop.SetForegroundWindow(hwnd);
+			User32Interop.AttachThreadInput(threadId1, threadId2, false);
 		}
 		else
-			SetForegroundWindow(hwnd);
+			User32Interop.SetForegroundWindow(hwnd);
 	}
-
-	[DllImport("user32.dll", SetLastError = true)]
-	public static extern IntPtr SetForegroundWindow(IntPtr hWnd);
-
-	[DllImport("user32.dll")]
-	public static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
-
-	[DllImport("user32.dll")]
-	public static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
-
-	[DllImport("user32.dll")]
-	public static extern IntPtr GetForegroundWindow();
 
 }
