@@ -1,0 +1,48 @@
+# Build artifacts
+bin/
+obj/
+out/
+
+# Rider project files
+.idea/
+*.sln.iml
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Logs
+*.log
+
+# Visual Studio Code files
+.vscode/
+
+# Rider workspace files
+.idea/
+
+# Visual Studio files
+.vs/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+*.pdb
+*.mdb
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Other
+*.bak
+*.swp
