@@ -29,11 +29,12 @@ public partial class MainWindow : Window
 		string windowTitle =
 			"CargoWise Next - ediProd - Branch: Sydney Aust Branch - Company: WiseTech Global (Australia) Pty Ltd - Department: Development";
 		var rootElement = GetRootElementByWindowTitle(windowTitle);
+		rootElement.SetFocus();
 
 		// Add your logic here
 		Width = rootElement.Current.BoundingRectangle.Width * (96.0 / VisualTreeHelper.GetDpi(this).PixelsPerInchX);
 		// Width = rootElement.Current.BoundingRectangle.Width;
-		Height = rootElement.Current.BoundingRectangle.Height * (96.0 / VisualTreeHelper.GetDpi(this).PixelsPerInchY);
+		Height = (rootElement.Current.BoundingRectangle.Height + 30) * (96.0 / VisualTreeHelper.GetDpi(this).PixelsPerInchY);
 		// Left = rootElement.Current.BoundingRectangle.X;
 		// Top = rootElement.Current.BoundingRectangle.Y;
 		Left = rootElement.Current.BoundingRectangle.X * (96.0 / VisualTreeHelper.GetDpi(this).PixelsPerInchX);
@@ -45,6 +46,32 @@ public partial class MainWindow : Window
 			var clickableElement = clickableElements[index];
 			AddHintText(clickableElement, index, rootElement);
 		}
+
+		var textBox = new TextBox
+		{
+			//Text = "",
+			Width = 200,
+			Height = 30,
+			Margin = new Thickness(10),
+			Padding = new Thickness(5),
+			Background = Brushes.LightGray,
+			Foreground = Brushes.Black
+		};
+		Canvas.SetLeft(textBox, 0); // X-coordinate
+		Canvas.SetTop(textBox, Height - 30); // Y-coordinate
+		// Add the TextBlock to the Canvas
+		if (Content is Canvas canvas)
+		{
+			canvas.Children.Add(textBox);
+		}
+
+		textBox.PreviewTextInput += (s, evt) =>
+		{
+			evt.Handled = !int.TryParse(evt.Text, out _);
+		};
+
+		Activate();
+		textBox.Focus();
 	}
 
 	private void AddHintText(AutomationElement clickableElement, int index, AutomationElement rootElement)
@@ -57,7 +84,7 @@ public partial class MainWindow : Window
 			FontSize = 12,
 			Background = Brushes.Aqua,
 			Margin = new Thickness(0),
-			Padding = new Thickness(0)
+			Padding = new Thickness(0),
 		};
 
 		var x = clickableElement.Current.BoundingRectangle.X - rootElement.Current.BoundingRectangle.X;
@@ -88,10 +115,15 @@ public partial class MainWindow : Window
 			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
 			new PropertyCondition(AutomationElement.IsInvokePatternAvailableProperty, true)
 		);
+		var visibleCondition = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
+		var finalCondition = new AndCondition(
+			clickableCondition,
+			visibleCondition
+			);
 		// var clickableCondition = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
 
 		// Find all matching elements
-		var clickableElements = rootElement.FindAll(TreeScope.Descendants, clickableCondition);
+		var clickableElements = rootElement.FindAll(TreeScope.Descendants, finalCondition);
 
 		return clickableElements;
 	}
