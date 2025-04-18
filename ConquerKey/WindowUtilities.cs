@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Interop;
 
 namespace ConquerKey;
@@ -27,4 +28,9 @@ public static class WindowUtilities {
 			User32Interop.SetForegroundWindow(hwnd);
 	}
 
+	public static AutomationElement GetActiveWindow()
+	{
+		IntPtr foregroundWindow = User32Interop.GetForegroundWindow();
+		return AutomationElement.FromHandle(foregroundWindow);
+	}
 }

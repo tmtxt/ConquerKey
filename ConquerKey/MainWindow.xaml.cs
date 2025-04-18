@@ -42,9 +42,9 @@ public partial class MainWindow : Window
 
 	private void ShowHintWindow()
 	{
-		var activeWindow = GetActiveWindow();
+		var activeWindow = WindowUtilities.GetActiveWindow();
 		var hintWindow = new HintWindow(activeWindow);
-		hintWindow.Topmost = true;
+		// hintWindow.Topmost = true;
 		hintWindow.Show();
 		// hintWindow.Activate();
 		WindowUtilities.ActivateWindow(hintWindow);
@@ -180,12 +180,6 @@ public partial class MainWindow : Window
 		{
 			canvas.Children.Add(textBlock);
 		}
-	}
-
-	static AutomationElement GetActiveWindow()
-	{
-		IntPtr foregroundWindow = User32Interop.GetForegroundWindow();
-		return AutomationElement.FromHandle(foregroundWindow);
 	}
 
 	static AutomationElement GetRootElementByWindowTitle(string windowTitle)

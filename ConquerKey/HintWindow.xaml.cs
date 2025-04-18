@@ -10,6 +10,7 @@ public partial class HintWindow : Window
 	public HintWindow(AutomationElement activeWindow)
 	{
 		_activeWindow = activeWindow;
+		Topmost = true;
 		InitializeComponent();
 		Loaded += HintWindow_Loaded;
 		Activated += HintWindow_Activated;
