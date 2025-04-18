@@ -9,11 +9,13 @@
         AllowsTransparency="True"
         Background="Transparent"
         Title="MainWindow" Height="450" Width="800">
-    <Border BorderBrush="Black" BorderThickness="1" CornerRadius="5">
-        <!-- Add your content here -->
-        <Grid>
+    <Canvas>
+        <Border BorderBrush="Black" BorderThickness="1" CornerRadius="5">
+            <!-- Add your content here -->
+            <Grid>
 
-        </Grid>
-    </Border>
+            </Grid>
+        </Border>
+    </Canvas>
 
 </Window>
