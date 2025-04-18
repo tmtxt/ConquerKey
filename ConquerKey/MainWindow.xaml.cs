@@ -26,12 +26,27 @@ public partial class MainWindow : Window
 	public MainWindow()
 	{
 		InitializeComponent();
-		Loaded += MainWindow_Loaded;
+		Loaded += MainWindow_LoadedSimple;
+		Closed += MainWindow_Closed;
 	}
 
-	private void MainWindow_Closed(object sender, EventArgs e)
+	private void MainWindow_Closed(object? sender, EventArgs e)
 	{
 		UnhookWindowsHookEx(_hookID);
+	}
+
+	private void MainWindow_LoadedSimple(object sender, RoutedEventArgs e)
+	{
+		_hookID = SetHook(HookCallback);
+	}
+
+	private void ShowHintWindow()
+	{
+		var hintWindow = new HintWindow();
+		hintWindow.Topmost = true;
+		hintWindow.Show();
+		// hintWindow.Activate();
+		WindowUtilities.ActivateWindow(hintWindow);
 	}
 
 	private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -120,9 +135,11 @@ public partial class MainWindow : Window
 				// 		mainWindow.Activate();
 				// 	}
 				// });
-				Topmost = true;
-				Activate();
-				BringIntoView();
+				// Topmost = true;
+				// Activate();
+				// BringIntoView();
+				// ShowHintWindow();
+				Dispatcher.InvokeAsync(ShowHintWindow);
 			}
 		}
 		return CallNextHookEx(_hookID, nCode, wParam, lParam);
