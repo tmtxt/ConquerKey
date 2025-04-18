@@ -41,4 +41,28 @@ public static class WindowUtilities {
 		var pixelPerInch = isVertical ? VisualTreeHelper.GetDpi(window).PixelsPerInchY : VisualTreeHelper.GetDpi(window).PixelsPerInchX;
 		return pixel * (defaultDpi / pixelPerInch);
 	}
+
+	/// <summary>
+	/// Need to update this method. Currently, it doesn't find all the elements on CW1 UI
+	/// </summary>
+	/// <param name="rootElement"></param>
+	/// <returns></returns>
+	public static AutomationElementCollection FindClickableElements(AutomationElement rootElement)
+	{
+		// Define a condition to find elements that are clickable
+		var clickableCondition = new OrCondition(
+			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
+			new PropertyCondition(AutomationElement.IsInvokePatternAvailableProperty, true)
+		);
+		var visibleCondition = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
+		var finalCondition = new AndCondition(
+			clickableCondition,
+			visibleCondition
+		);
+
+		// Find all matching elements
+		var clickableElements = rootElement.FindAll(TreeScope.Descendants, finalCondition);
+
+		return clickableElements;
+	}
 }

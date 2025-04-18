@@ -5,13 +5,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:ConquerKey"
         mc:Ignorable="d"
-
+        WindowStyle="None"
+        AllowsTransparency="true"
+        Background="Transparent"
         Title="HintWindow" Height="450" Width="800">
     <Canvas>
         <Border BorderBrush="Black" BorderThickness="1" CornerRadius="5">
             <!-- Add your content here -->
             <Grid>
-                <TextBox Text="Type something here" x:Name="MyTextBox"/>
             </Grid>
         </Border>
     </Canvas>
