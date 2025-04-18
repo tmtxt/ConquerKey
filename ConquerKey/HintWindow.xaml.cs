@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace ConquerKey;
@@ -8,11 +9,13 @@ namespace ConquerKey;
 public partial class HintWindow : Window
 {
 	private readonly AutomationElement _activeWindow;
+	private readonly AutomationElementCollection _clickableElements;
 	private TextBox _hintTextBox;
 
 	public HintWindow(AutomationElement activeWindow)
 	{
 		_activeWindow = activeWindow;
+		_clickableElements = WindowUtilities.FindClickableElements(_activeWindow);
 
 		InitializeComponent();
 		// Loaded += HintWindow_Loaded;
@@ -61,14 +64,29 @@ public partial class HintWindow : Window
 		{
 			evt.Handled = !int.TryParse(evt.Text, out _);
 		};
+
+		_hintTextBox.KeyDown += (s, evt) =>
+		{
+			if (evt.Key != Key.Enter) return;
+
+			// Handle the Enter key press here
+			// MessageBox.Show($"You pressed Enter. Text: {textBox.Text}");
+			var clickableElement = _clickableElements[int.Parse(_hintTextBox.Text)];
+			if (clickableElement.TryGetCurrentPattern(InvokePattern.Pattern, out var pattern))
+			{
+				((InvokePattern)pattern).Invoke(); // Perform the click
+			}
+			Close();
+
+			evt.Handled = true; // Mark the event as handled if necessary
+		};
 	}
 
 	private void AddHintLabels()
 	{
-		var clickableElements = WindowUtilities.FindClickableElements(_activeWindow);
-		for (var index = 0; index < clickableElements.Count; index++)
+		for (var index = 0; index < _clickableElements.Count; index++)
 		{
-			var clickableElement = clickableElements[index];
+			var clickableElement = _clickableElements[index];
 			AddHintText(clickableElement, index);
 		}
 
