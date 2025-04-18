@@ -22,11 +22,20 @@ public partial class HintWindow : Window
 		InitializeComponent();
 		// Loaded += HintWindow_Loaded;
 		Activated += HintWindow_Activated;
+		KeyDown += HintWindow_KeyDown;
 
 		Topmost = true;
 		SetPosition();
 		AddHintLabels();
 		AddHintTextBox();
+	}
+
+	private void HintWindow_KeyDown(object sender, KeyEventArgs e)
+	{
+		if (e.Key != Key.Escape) return;
+
+		Close();
+		e.Handled = true; // Mark the event as handled
 	}
 
 	private void AddHintTextBox()
