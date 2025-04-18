@@ -85,6 +85,8 @@ public partial class HintWindow : Window
 				var rect = clickableElement.Current.BoundingRectangle;
 				var x = (int)(rect.X + rect.Width / 2);
 				var y = (int)(rect.Y + rect.Height / 2);
+
+				WindowUtilities.SendMouseClick(x, y);
 			}
 
 			evt.Handled = true; // Mark the event as handled if necessary

@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Interop;
 using System.Windows.Media;
-using Condition = System.Windows.Automation.Condition;
 
 namespace ConquerKey;
 
@@ -81,5 +80,44 @@ public static class WindowUtilities {
 		var count = clickableElements.Count;
 
 		return clickableElements;
+	}
+
+	/// <summary>
+	/// Move the mouse cursor to the specified coordinates and perform a left mouse click.
+	/// </summary>
+	public static void SendMouseClick(int x, int y)
+	{
+		User32Interop.SetCursorPos(x, y);
+
+		// Simulate a left mouse button click
+		var input = new User32Interop.INPUT[2];
+
+		// Mouse down
+		input[0] = new User32Interop.INPUT
+		{
+			type = User32Interop.INPUT_MOUSE,
+			U = new User32Interop.InputUnion
+			{
+				mi = new User32Interop.MOUSEINPUT
+				{
+					dwFlags = User32Interop.MOUSEEVENTF_LEFTDOWN,
+				}
+			}
+		};
+
+		// Mouse up
+		input[1] = new User32Interop.INPUT
+		{
+			type = User32Interop.INPUT_MOUSE,
+			U = new User32Interop.InputUnion
+			{
+				mi = new User32Interop.MOUSEINPUT
+				{
+					dwFlags = User32Interop.MOUSEEVENTF_LEFTUP,
+				}
+			}
+		};
+
+		User32Interop.SendInput((uint)input.Length, input, Marshal.SizeOf(typeof(User32Interop.INPUT)));
 	}
 }
