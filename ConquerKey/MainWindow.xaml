@@ -5,8 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ConquerKey"
         mc:Ignorable="d"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <Border BorderBrush="Black" BorderThickness="1" CornerRadius="5">
+        <!-- Add your content here -->
+        <Grid>
 
-    </Grid>
+        </Grid>
+    </Border>
+
 </Window>
