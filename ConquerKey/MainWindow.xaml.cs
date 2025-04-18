@@ -70,6 +70,21 @@ public partial class MainWindow : Window
 			evt.Handled = !int.TryParse(evt.Text, out _);
 		};
 
+		textBox.KeyDown += (s, evt) =>
+		{
+			if (evt.Key != Key.Enter) return;
+
+			// Handle the Enter key press here
+			// MessageBox.Show($"You pressed Enter. Text: {textBox.Text}");
+			var clickableElement = clickableElements[int.Parse(textBox.Text)];
+			if (clickableElement.TryGetCurrentPattern(InvokePattern.Pattern, out object pattern))
+			{
+				((InvokePattern)pattern).Invoke(); // Perform the click
+			}
+
+			evt.Handled = true; // Mark the event as handled if necessary
+		};
+
 		Activate();
 		textBox.Focus();
 	}
