@@ -101,7 +101,7 @@ public partial class MainWindow : Window
 		_hookID = SetHook(HookCallback);
 	}
 
-	private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+	private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
 	{
 		if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
 		{
@@ -111,15 +111,18 @@ public partial class MainWindow : Window
 				(Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) &&
 				vkCode == KeyInterop.VirtualKeyFromKey(Key.T))
 			{
-				Application.Current.Dispatcher.Invoke(() =>
-				{
-					var mainWindow = Application.Current.MainWindow as MainWindow;
-					if (mainWindow != null)
-					{
-						mainWindow.Topmost = true;
-						mainWindow.Activate();
-					}
-				});
+				// Application.Current.Dispatcher.Invoke(() =>
+				// {
+				// 	var mainWindow = Application.Current.MainWindow as MainWindow;
+				// 	if (mainWindow != null)
+				// 	{
+				// 		mainWindow.Topmost = true;
+				// 		mainWindow.Activate();
+				// 	}
+				// });
+				Topmost = true;
+				Activate();
+				BringIntoView();
 			}
 		}
 		return CallNextHookEx(_hookID, nCode, wParam, lParam);
