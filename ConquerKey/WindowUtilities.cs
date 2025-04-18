@@ -10,6 +10,7 @@ public static class WindowUtilities {
 
 	/// <summary>
 	/// Activates a WPF window even if the window is activated on a separate thread
+	/// https://weblog.west-wind.com/posts/2020/Oct/12/Window-Activation-Headaches-in-WPF
 	/// </summary>
 	/// <param name="window"></param>
 	public static void ActivateWindow(Window window)
