@@ -85,12 +85,7 @@ public partial class HintWindow : Window
 				var rect = clickableElement.Current.BoundingRectangle;
 				var x = (int)(rect.X + rect.Width / 2);
 				var y = (int)(rect.Y + rect.Height / 2);
-
-				System.Windows.Forms.Cursor.Position = new System.Drawing.Point(x, y);
-				System.Windows.Forms.SendKeys.SendWait("{ENTER}"); // Simulate pressing Enter or a click
 			}
-
-
 
 			evt.Handled = true; // Mark the event as handled if necessary
 		};
