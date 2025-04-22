@@ -1,12 +1,13 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Windows;
 using System.Windows.Input;
 
 namespace ConquerKey;
 
 public class GlobalKeyListener : IGlobalKeyListener
 {
+	#region User32.dll interop
+
 	private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
 	private LowLevelKeyboardProc _hookCallbackDelegate;
@@ -26,6 +27,8 @@ public class GlobalKeyListener : IGlobalKeyListener
 
 	[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 	private static extern IntPtr GetModuleHandle(string lpModuleName);
+
+	#endregion
 
 	private IntPtr _hookId = IntPtr.Zero;
 
