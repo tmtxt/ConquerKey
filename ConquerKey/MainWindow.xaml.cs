@@ -18,8 +18,8 @@ public partial class MainWindow : Window
 	public MainWindow()
 	{
 		InitializeComponent();
-		Loaded += MainWindow_LoadedSimple;
-		Closed += MainWindow_Closed;
+		// Loaded += MainWindow_LoadedSimple;
+		// Closed += MainWindow_Closed;
 	}
 
 	private void MainWindow_Closed(object? sender, EventArgs e)
