@@ -21,11 +21,15 @@ public partial class App : Application
 	private void ConfigureServices(IServiceCollection services)
 	{
 		services.AddSingleton<MainWindow>();
+		services.AddSingleton<IGlobalKeyListener, GlobalKeyListener>();
 	}
 
 	protected override void OnStartup(StartupEventArgs e)
 	{
 		base.OnStartup(e);
+
+		var globalKeyListener = _serviceProvider.GetRequiredService<IGlobalKeyListener>();
+		globalKeyListener.StartListening();
 
 		var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
 		mainWindow.Show();
