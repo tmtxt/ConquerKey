@@ -4,5 +4,5 @@ namespace ConquerKey;
 
 public interface IActiveWindow
 {
-	public AutomationElement Current { get; }
+	public AutomationElement Instance { get; }
 }

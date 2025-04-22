@@ -8,12 +8,11 @@ public class ActiveWindow : IActiveWindow
 	[DllImport("user32.dll")]
 	private static extern IntPtr GetForegroundWindow();
 
-	public AutomationElement Current
+	public ActiveWindow()
 	{
-		get
-		{
-			var foregroundWindow = GetForegroundWindow();
-			return AutomationElement.FromHandle(foregroundWindow);
-		}
+		var foregroundWindow = GetForegroundWindow();
+		Instance = AutomationElement.FromHandle(foregroundWindow);
 	}
+
+	public AutomationElement Instance { get; }
 }
