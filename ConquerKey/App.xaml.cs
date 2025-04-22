@@ -22,6 +22,7 @@ public partial class App : Application
 	{
 		services.AddSingleton<MainWindow>();
 		services.AddSingleton<IGlobalKeyListener, GlobalKeyListener>();
+		services.AddTransient<IActiveWindow, ActiveWindow>();
 	}
 
 	protected override void OnStartup(StartupEventArgs e)
