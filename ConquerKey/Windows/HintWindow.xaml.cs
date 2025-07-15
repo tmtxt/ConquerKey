@@ -6,7 +6,7 @@ using Brushes = System.Windows.Media.Brushes;
 using Label = System.Windows.Controls.Label;
 using TextBox = System.Windows.Controls.TextBox;
 
-namespace ConquerKey;
+namespace ConquerKey.Windows;
 
 public partial class HintWindow : Window
 {

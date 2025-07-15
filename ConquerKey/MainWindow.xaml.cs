@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using ConquerKey.Windows;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace ConquerKey;
