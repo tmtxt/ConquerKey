@@ -21,5 +21,12 @@ public class ActionWindow : Window
 		_activeWindow = AutomationElement.FromHandle(foregroundWindow);
 		
 		_interactableElements = actionHandler.FindInteractableElements(_activeWindow);
+
+		Topmost = true;
+		Width = WindowUtilities.PixelToDeviceIndependentUnit(this, _activeWindow.Current.BoundingRectangle.Width, false);
+		Height = WindowUtilities.PixelToDeviceIndependentUnit(this, _activeWindow.Current.BoundingRectangle.Height + 30,
+			true); // + 30 for textbox to input the hint number
+		Left = WindowUtilities.PixelToDeviceIndependentUnit(this, _activeWindow.Current.BoundingRectangle.Left, false);
+		Top = WindowUtilities.PixelToDeviceIndependentUnit(this, _activeWindow.Current.BoundingRectangle.Top, true);
 	}
 }
