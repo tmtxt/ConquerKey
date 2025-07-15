@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using ConquerKey.ActionHandlers;
 using static ConquerKey.WindowUtilities;
@@ -13,6 +14,7 @@ public class ActionWindow : Window
 	private readonly IActionHandler _actionHandler;
 	private AutomationElement _activeWindow;
 	private AutomationElementCollection _interactableElements;
+	private TextBox _hintTextBox;
 
 	[DllImport("user32.dll")]
 	private static extern IntPtr GetForegroundWindow();
@@ -25,8 +27,11 @@ public class ActionWindow : Window
 		_activeWindow = AutomationElement.FromHandle(foregroundWindow);
 		_interactableElements = actionHandler.FindInteractableElements(_activeWindow);
 		
+		Activated += HintWindow_Activated;
+		
 		ConfigureWindow();
 		AddHintLabels();
+		AddHintTextBox();
 	}
 
 	private void AddHintLabels()
@@ -39,7 +44,6 @@ public class ActionWindow : Window
 		
 		void AddHintLabel(AutomationElement clickableElement, int index)
 		{
-			// Add your logic here
 			var textBlock = new TextBlock
 			{
 				Text = index.ToString(),
@@ -64,6 +68,69 @@ public class ActionWindow : Window
 			}
 		}
 	}
+	
+	private void AddHintTextBox()
+	{
+		var hintLabel = new Label
+		{
+			Content = "Enter Hint:",
+			Margin = new Thickness(10),
+			Foreground = Brushes.Black,
+			FontSize = 12,
+			Background = Brushes.Chartreuse,
+		};
+		Canvas.SetLeft(hintLabel, 0); // X-coordinate
+		Canvas.SetTop(hintLabel, Height - 30); // Y-coordinate
+
+		_hintTextBox = new TextBox
+		{
+			FontSize = 12,
+			Width = 200,
+			Height = 30,
+			Margin = new Thickness(10),
+			Padding = new Thickness(5),
+			Background = Brushes.LightGray,
+			Foreground = Brushes.Black,
+		};
+		Canvas.SetLeft(_hintTextBox, 80); // X-coordinate
+		Canvas.SetTop(_hintTextBox, Height - 30); // Y-coordinate
+
+		if (Content is Canvas canvas)
+		{
+			canvas.Children.Add(hintLabel);
+			canvas.Children.Add(_hintTextBox);
+		}
+
+		_hintTextBox.PreviewTextInput += (s, evt) =>
+		{
+			evt.Handled = !int.TryParse(evt.Text, out _);
+		};
+
+		_hintTextBox.KeyDown += (s, evt) =>
+		{
+			if (evt.Key != Key.Enter) return;
+
+			Close();
+
+			// Handle the Enter key press here
+			// MessageBox.Show($"You pressed Enter. Text: {textBox.Text}");
+			var clickableElement = _interactableElements[int.Parse(_hintTextBox.Text)];
+			if (clickableElement.TryGetCurrentPattern(InvokePattern.Pattern, out var pattern))
+			{
+				((InvokePattern)pattern).Invoke(); // Perform the click
+			}
+			else
+			{
+				var rect = clickableElement.Current.BoundingRectangle;
+				var x = (int)(rect.X + rect.Width / 2);
+				var y = (int)(rect.Y + rect.Height / 2);
+
+				SendMouseClick(x, y);
+			}
+
+			evt.Handled = true; // Mark the event as handled if necessary
+		};
+	}
 
 	private void ConfigureWindow()
 	{
@@ -87,5 +154,10 @@ public class ActionWindow : Window
 		};
 		canvas.Children.Add(border);
 		Content = canvas;
+	}
+	
+	private void HintWindow_Activated(object? sender, EventArgs e)
+	{
+		_hintTextBox.Focus();
 	}
 }

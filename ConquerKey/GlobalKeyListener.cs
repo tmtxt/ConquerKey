@@ -72,6 +72,7 @@ public class GlobalKeyListener(IServiceProvider serviceProvider) : IGlobalKeyLis
 			// clickActionWindow.Show();
 			var actionWindow = _serviceProvider.GetRequiredKeyedService<Windows.ActionWindow>(Actions.Click);
 			actionWindow.Show();
+			WindowUtilities.ActivateWindow(actionWindow);
 		}
 
 		return CallNextHookEx(_hookId, nCode, wParam, lParam);
