@@ -1,16 +1,15 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ConquerKey;
 
-public class GlobalKeyListener : IGlobalKeyListener
+public class GlobalKeyListener(IServiceProvider serviceProvider) : IGlobalKeyListener
 {
 	#region User32.dll interop
 
 	private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-	private LowLevelKeyboardProc _hookCallbackDelegate;
 
 	private const int WH_KEYBOARD_LL = 13;
 	private const int WM_KEYDOWN = 0x0100;
@@ -31,6 +30,7 @@ public class GlobalKeyListener : IGlobalKeyListener
 	#endregion
 
 	private IntPtr _hookId = IntPtr.Zero;
+	private readonly IServiceProvider _serviceProvider = serviceProvider;
 
 	public void StartListening()
 	{
@@ -67,7 +67,8 @@ public class GlobalKeyListener : IGlobalKeyListener
 			(Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin)) &&
 			vkCode == KeyInterop.VirtualKeyFromKey(Key.T))
 		{
-			Console.WriteLine("test");
+			var clickActionWindow = _serviceProvider.GetRequiredService<ClickActionWindow>();
+			clickActionWindow.Show();
 		}
 
 		return CallNextHookEx(_hookId, nCode, wParam, lParam);

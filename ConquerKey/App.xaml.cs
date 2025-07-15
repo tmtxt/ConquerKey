@@ -22,7 +22,9 @@ public partial class App : Application
 	{
 		services.AddSingleton<MainWindow>();
 		services.AddSingleton<IGlobalKeyListener, GlobalKeyListener>();
-		services.AddTransient<IActiveWindow, ActiveWindow>();
+		// services.AddTransient<IActiveWindow, ActiveWindow>();
+		services.AddTransient<ClickActionWindow>();
+		services.AddTransient<ICapturedWindow, CapturedWindow>();
 	}
 
 	protected override void OnStartup(StartupEventArgs e)
