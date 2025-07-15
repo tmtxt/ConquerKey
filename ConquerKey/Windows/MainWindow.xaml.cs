@@ -1,8 +1,6 @@
 ﻿using System.Windows;
-using ConquerKey.Windows;
-using TextBox = System.Windows.Controls.TextBox;
 
-namespace ConquerKey;
+namespace ConquerKey.Windows;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

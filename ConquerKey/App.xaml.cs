@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using ConquerKey.ActionWindow;
+using ConquerKey.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Application = System.Windows.Application;
 
