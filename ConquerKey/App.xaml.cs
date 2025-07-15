@@ -23,9 +23,7 @@ public partial class App : Application
 	{
 		services.AddSingleton<MainWindow>();
 		services.AddSingleton<IGlobalKeyListener, GlobalKeyListener>();
-		// services.AddTransient<IActiveWindow, ActiveWindow>();
-		services.AddTransient<ClickActionWindow>();
-		services.AddTransient<ICapturedWindow, CapturedWindow>();
+		
 		services.AddTransient<ClickActionHandler>();
 		services.AddKeyedTransient<ActionWindow.ActionWindow>(Actions.Click,
 			(provider, _) => new ActionWindow.ActionWindow(provider.GetRequiredService<ClickActionHandler>()));
