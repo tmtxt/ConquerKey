@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ConquerKey;
 
-public class GlobalKeyListener(IServiceProvider serviceProvider) : IGlobalKeyListener
+public class GlobalKeyListener : IGlobalKeyListener
 {
 	#region User32.dll interop
 
@@ -31,7 +31,14 @@ public class GlobalKeyListener(IServiceProvider serviceProvider) : IGlobalKeyLis
 	#endregion
 
 	private IntPtr _hookId = IntPtr.Zero;
-	private readonly IServiceProvider _serviceProvider = serviceProvider;
+	private readonly IServiceProvider _serviceProvider;
+	private LowLevelKeyboardProc  _lowLevelKeyboardProc;
+
+	public GlobalKeyListener(IServiceProvider serviceProvider)
+	{
+		_serviceProvider = serviceProvider;
+		_lowLevelKeyboardProc = HookCallback;
+	}
 
 	public void StartListening()
 	{
@@ -42,7 +49,7 @@ public class GlobalKeyListener(IServiceProvider serviceProvider) : IGlobalKeyLis
 			throw new Exception("Module not found");
 		}
 
-		_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, HookCallback, GetModuleHandle(curModule.ModuleName), 0);
+		_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, _lowLevelKeyboardProc, GetModuleHandle(curModule.ModuleName), 0);
 	}
 
 	public void StopListening()
