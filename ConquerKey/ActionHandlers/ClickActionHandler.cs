@@ -1,6 +1,6 @@
 ﻿using System.Windows.Automation;
 
-namespace ConquerKey.ActionWindow
+namespace ConquerKey.ActionHandlers
 {
 	public class ClickActionHandler : IActionHandler
 	{
