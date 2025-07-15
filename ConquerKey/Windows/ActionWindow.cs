@@ -1,8 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Automation;
+using ConquerKey.ActionWindow;
 
-namespace ConquerKey.ActionWindow;
+namespace ConquerKey.Windows;
 
 public class ActionWindow : Window
 {

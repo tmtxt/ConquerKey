@@ -26,8 +26,8 @@ public partial class App : Application
 		services.AddSingleton<IGlobalKeyListener, GlobalKeyListener>();
 		
 		services.AddTransient<ClickActionHandler>();
-		services.AddKeyedTransient<ActionWindow.ActionWindow>(Actions.Click,
-			(provider, _) => new ActionWindow.ActionWindow(provider.GetRequiredService<ClickActionHandler>()));
+		services.AddKeyedTransient<Windows.ActionWindow>(Actions.Click,
+			(provider, _) => new Windows.ActionWindow(provider.GetRequiredService<ClickActionHandler>()));
 	}
 
 	protected override void OnStartup(StartupEventArgs e)

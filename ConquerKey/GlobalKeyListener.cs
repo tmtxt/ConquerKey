@@ -70,7 +70,7 @@ public class GlobalKeyListener(IServiceProvider serviceProvider) : IGlobalKeyLis
 		{
 			// var clickActionWindow = _serviceProvider.GetRequiredService<ClickActionWindow>();
 			// clickActionWindow.Show();
-			var actionWindow = _serviceProvider.GetRequiredKeyedService<ActionWindow.ActionWindow>(Actions.Click);
+			var actionWindow = _serviceProvider.GetRequiredKeyedService<Windows.ActionWindow>(Actions.Click);
 			actionWindow.Show();
 		}
 
