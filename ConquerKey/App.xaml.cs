@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using ConquerKey.ActionWindow;
 using Microsoft.Extensions.DependencyInjection;
 using Application = System.Windows.Application;
 
@@ -25,6 +26,9 @@ public partial class App : Application
 		// services.AddTransient<IActiveWindow, ActiveWindow>();
 		services.AddTransient<ClickActionWindow>();
 		services.AddTransient<ICapturedWindow, CapturedWindow>();
+		services.AddTransient<ClickActionHandler>();
+		services.AddKeyedTransient<ActionWindow.ActionWindow>(Actions.Click,
+			(provider, _) => new ActionWindow.ActionWindow(provider.GetRequiredService<ClickActionHandler>()));
 	}
 
 	protected override void OnStartup(StartupEventArgs e)

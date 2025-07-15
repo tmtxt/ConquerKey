@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
+using ConquerKey.ActionWindow;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ConquerKey;
@@ -67,8 +68,10 @@ public class GlobalKeyListener(IServiceProvider serviceProvider) : IGlobalKeyLis
 			(Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin)) &&
 			vkCode == KeyInterop.VirtualKeyFromKey(Key.T))
 		{
-			var clickActionWindow = _serviceProvider.GetRequiredService<ClickActionWindow>();
-			clickActionWindow.Show();
+			// var clickActionWindow = _serviceProvider.GetRequiredService<ClickActionWindow>();
+			// clickActionWindow.Show();
+			var actionWindow = _serviceProvider.GetRequiredKeyedService<ActionWindow.ActionWindow>(Actions.Click);
+			actionWindow.Show();
 		}
 
 		return CallNextHookEx(_hookId, nCode, wParam, lParam);

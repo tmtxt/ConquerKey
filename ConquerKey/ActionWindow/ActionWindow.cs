@@ -2,9 +2,9 @@
 
 namespace ConquerKey.ActionWindow;
 
-public abstract class ActionWindow : Window
+public class ActionWindow : Window
 {
-	public ActionWindow()
+	public ActionWindow(IActionHandler handler)
 	{
 	}
 }
