@@ -33,5 +33,14 @@ namespace ConquerKey.ActionHandlers
 			var clickableElements = rootElement.FindAll(TreeScope.Descendants, finalCondition);
 			return clickableElements;
 		}
+
+		public void Interact(AutomationElement window, AutomationElement element)
+		{
+			var rect = element.Current.BoundingRectangle;
+			var x = (int)(rect.X + rect.Width / 2);
+			var y = (int)(rect.Y + rect.Height / 2);
+
+			WindowUtilities.SendMouseClick(x, y);
+		}
 	}
 }

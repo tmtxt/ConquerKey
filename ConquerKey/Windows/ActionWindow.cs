@@ -114,19 +114,23 @@ public class ActionWindow : Window
 
 			// Handle the Enter key press here
 			// MessageBox.Show($"You pressed Enter. Text: {textBox.Text}");
-			var clickableElement = _interactableElements[int.Parse(_hintTextBox.Text)];
-			if (clickableElement.TryGetCurrentPattern(InvokePattern.Pattern, out var pattern))
+			var uiElement = _interactableElements[int.Parse(_hintTextBox.Text)];
+			if (uiElement != null)
 			{
-				((InvokePattern)pattern).Invoke(); // Perform the click
+				_actionHandler.Interact(_activeWindow, uiElement);
 			}
-			else
-			{
-				var rect = clickableElement.Current.BoundingRectangle;
-				var x = (int)(rect.X + rect.Width / 2);
-				var y = (int)(rect.Y + rect.Height / 2);
-
-				SendMouseClick(x, y);
-			}
+			// if (clickableElement.TryGetCurrentPattern(InvokePattern.Pattern, out var pattern))
+			// {
+			// 	((InvokePattern)pattern).Invoke(); // Perform the click
+			// }
+			// else
+			// {
+			// 	var rect = clickableElement.Current.BoundingRectangle;
+			// 	var x = (int)(rect.X + rect.Width / 2);
+			// 	var y = (int)(rect.Y + rect.Height / 2);
+			//
+			// 	SendMouseClick(x, y);
+			// }
 
 			evt.Handled = true; // Mark the event as handled if necessary
 		};
