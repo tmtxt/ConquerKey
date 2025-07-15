@@ -1,6 +1,9 @@
-﻿namespace ConquerKey.ActionWindow
+﻿using System.Windows.Automation;
+
+namespace ConquerKey.ActionWindow
 {
-	public class IActionHandler
+	public interface IActionHandler
 	{
+		AutomationElementCollection FindInteractableElements(AutomationElement rootElement);
 	}
 }
