@@ -27,7 +27,9 @@ public class ActionWindow : Window
 		_activeWindow = AutomationElement.FromHandle(foregroundWindow);
 		_interactableElements = actionHandler.FindInteractableElements(_activeWindow);
 		
-		Activated += HintWindow_Activated;
+		Activated += ActionWindow_Activated;
+		Deactivated += ActionWindow_Deactivated;
+		KeyDown += ActionWindow_KeyDown;
 		
 		ConfigureWindow();
 		AddHintLabels();
@@ -149,8 +151,21 @@ public class ActionWindow : Window
 		Content = canvas;
 	}
 	
-	private void HintWindow_Activated(object? sender, EventArgs e)
+	private void ActionWindow_Activated(object? sender, EventArgs e)
 	{
 		_hintTextBox.Focus();
+	}
+	
+	private void ActionWindow_KeyDown(object sender, KeyEventArgs e)
+	{
+		if (e.Key != Key.Escape) return;
+
+		Close();
+		e.Handled = true; // Mark the event as handled
+	}
+	
+	private void ActionWindow_Deactivated(object? sender, EventArgs e)
+	{
+		Close();
 	}
 }
