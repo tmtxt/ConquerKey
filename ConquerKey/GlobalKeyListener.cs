@@ -72,8 +72,9 @@ public class GlobalKeyListener : IGlobalKeyListener
 
 		var vkCode = Marshal.ReadInt32(lParam);
 		if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) &&
-			(Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin)) &&
-			vkCode == KeyInterop.VirtualKeyFromKey(Key.T))
+		    (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) &&
+			(Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)) &&
+			vkCode == KeyInterop.VirtualKeyFromKey(Key.F))
 		{
 			// var clickActionWindow = _serviceProvider.GetRequiredService<ClickActionWindow>();
 			// clickActionWindow.Show();

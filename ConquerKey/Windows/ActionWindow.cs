@@ -12,9 +12,9 @@ namespace ConquerKey.Windows;
 public class ActionWindow : Window
 {
 	private readonly IActionHandler _actionHandler;
-	private AutomationElement _activeWindow;
-	private AutomationElementCollection _interactableElements;
-	private TextBox _hintTextBox;
+	private readonly AutomationElement _activeWindow;
+	private readonly AutomationElementCollection _interactableElements;
+	private readonly TextBox _hintTextBox;
 
 	[DllImport("user32.dll")]
 	private static extern IntPtr GetForegroundWindow();
@@ -31,7 +31,7 @@ public class ActionWindow : Window
 		
 		ConfigureWindow();
 		AddHintLabels();
-		AddHintTextBox();
+		_hintTextBox = AddHintTextBox();
 	}
 
 	private void AddHintLabels()
@@ -69,7 +69,7 @@ public class ActionWindow : Window
 		}
 	}
 	
-	private void AddHintTextBox()
+	private TextBox AddHintTextBox()
 	{
 		var hintLabel = new Label
 		{
@@ -82,7 +82,7 @@ public class ActionWindow : Window
 		Canvas.SetLeft(hintLabel, 0); // X-coordinate
 		Canvas.SetTop(hintLabel, Height - 30); // Y-coordinate
 
-		_hintTextBox = new TextBox
+		var hintTextBox = new TextBox
 		{
 			FontSize = 12,
 			Width = 200,
@@ -92,28 +92,28 @@ public class ActionWindow : Window
 			Background = Brushes.LightGray,
 			Foreground = Brushes.Black,
 		};
-		Canvas.SetLeft(_hintTextBox, 80); // X-coordinate
-		Canvas.SetTop(_hintTextBox, Height - 30); // Y-coordinate
+		Canvas.SetLeft(hintTextBox, 80); // X-coordinate
+		Canvas.SetTop(hintTextBox, Height - 30); // Y-coordinate
 
 		if (Content is Canvas canvas)
 		{
 			canvas.Children.Add(hintLabel);
-			canvas.Children.Add(_hintTextBox);
+			canvas.Children.Add(hintTextBox);
 		}
 
-		_hintTextBox.PreviewTextInput += (s, evt) =>
+		hintTextBox.PreviewTextInput += (s, evt) =>
 		{
 			evt.Handled = !int.TryParse(evt.Text, out _);
 		};
 
-		_hintTextBox.KeyDown += (s, evt) =>
+		hintTextBox.KeyDown += (s, evt) =>
 		{
 			if (evt.Key != Key.Enter) return;
 
 			Close();
 
 			// Handle the Enter key press here
-			var uiElement = _interactableElements[int.Parse(_hintTextBox.Text)];
+			var uiElement = _interactableElements[int.Parse(hintTextBox.Text)];
 			if (uiElement != null)
 			{
 				_actionHandler.Interact(_activeWindow, uiElement);
@@ -121,6 +121,8 @@ public class ActionWindow : Window
 
 			evt.Handled = true; // Mark the event as handled if necessary
 		};
+
+		return hintTextBox;
 	}
 
 	private void ConfigureWindow()
