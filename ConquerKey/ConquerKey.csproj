@@ -8,9 +8,9 @@
         <UseWPF>true</UseWPF>
         
         <!-- Versioning -->
-        <Version>1.0.0</Version>
-        <AssemblyVersion>1.0.0.0</AssemblyVersion>
-        <FileVersion>1.0.0.0</FileVersion>
+        <Version>0.0.1</Version>
+        <AssemblyVersion>0.0.1.0</AssemblyVersion>
+        <FileVersion>0.0.1.0</FileVersion>
         <ProductName>ConquerKey</ProductName>
         <Company>ConquerKey</Company>
         
@@ -19,6 +19,7 @@
         <SelfContained>true</SelfContained>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <PublishSingleFile>true</PublishSingleFile>
+        <UseAppHost>true</UseAppHost>
         <IncludeNativeLibrariesForSelfContain>true</IncludeNativeLibrariesForSelfContain>
         <IncludeAllContentForSelfContain>true</IncludeAllContentForSelfContain>
         <DebugType>embedded</DebugType>

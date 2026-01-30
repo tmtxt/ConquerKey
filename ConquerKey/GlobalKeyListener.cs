@@ -42,14 +42,30 @@ public class GlobalKeyListener : IGlobalKeyListener
 
 	public void StartListening()
 	{
+		// For single-file published apps, use "user32.dll" as a fallback
+		// since the main module may not be accessible in the expected way
+		var moduleHandle = IntPtr.Zero;
+		
 		using var curProcess = Process.GetCurrentProcess();
 		using var curModule = curProcess.MainModule;
-		if (curModule == null)
+		
+		if (curModule != null)
 		{
-			throw new Exception("Module not found");
+			moduleHandle = GetModuleHandle(curModule.ModuleName);
+		}
+		
+		// Fallback: use IntPtr.Zero which works for global hooks
+		if (moduleHandle == IntPtr.Zero)
+		{
+			moduleHandle = GetModuleHandle(null!);
 		}
 
-		_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, _lowLevelKeyboardProc, GetModuleHandle(curModule.ModuleName), 0);
+		_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, _lowLevelKeyboardProc, moduleHandle, 0);
+		
+		if (_hookId == IntPtr.Zero)
+		{
+			throw new Exception($"Failed to set keyboard hook. Error code: {Marshal.GetLastWin32Error()}");
+		}
 	}
 
 	public void StopListening()
