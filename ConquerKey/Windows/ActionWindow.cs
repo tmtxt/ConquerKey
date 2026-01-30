@@ -15,22 +15,23 @@ public class ActionWindow : Window
 	private readonly AutomationElement _activeWindow;
 	private readonly AutomationElementCollection _interactableElements;
 	private readonly TextBox _hintTextBox;
+	private bool _isClosing;
 
 	[DllImport("user32.dll")]
 	private static extern IntPtr GetForegroundWindow();
-	
+
 	public ActionWindow(IActionHandler actionHandler)
 	{
 		_actionHandler = actionHandler;
-		
+
 		var foregroundWindow = GetForegroundWindow();
 		_activeWindow = AutomationElement.FromHandle(foregroundWindow);
 		_interactableElements = actionHandler.FindInteractableElements(_activeWindow);
-		
+
 		Activated += ActionWindow_Activated;
 		Deactivated += ActionWindow_Deactivated;
 		KeyDown += ActionWindow_KeyDown;
-		
+
 		ConfigureWindow();
 		AddHintLabels();
 		_hintTextBox = AddHintTextBox();
@@ -43,7 +44,7 @@ public class ActionWindow : Window
 			var clickableElement = _interactableElements[index];
 			AddHintLabel(clickableElement, index);
 		}
-		
+
 		void AddHintLabel(AutomationElement clickableElement, int index)
 		{
 			var textBlock = new TextBlock
@@ -70,7 +71,7 @@ public class ActionWindow : Window
 			}
 		}
 	}
-	
+
 	private TextBox AddHintTextBox()
 	{
 		var hintLabel = new Label
@@ -138,7 +139,7 @@ public class ActionWindow : Window
 		WindowStyle = WindowStyle.None;
 		AllowsTransparency = true;
 		Background = Brushes.Transparent;
-		
+
 		var canvas = new Canvas();
 
 		var border = new Border
@@ -150,22 +151,26 @@ public class ActionWindow : Window
 		canvas.Children.Add(border);
 		Content = canvas;
 	}
-	
+
 	private void ActionWindow_Activated(object? sender, EventArgs e)
 	{
 		_hintTextBox.Focus();
 	}
-	
+
 	private void ActionWindow_KeyDown(object sender, KeyEventArgs e)
 	{
 		if (e.Key != Key.Escape) return;
 
+		_isClosing = true;
 		Close();
 		e.Handled = true; // Mark the event as handled
 	}
-	
+
 	private void ActionWindow_Deactivated(object? sender, EventArgs e)
 	{
+		if (_isClosing) return;
+
+		_isClosing = true;
 		Close();
 	}
 }
