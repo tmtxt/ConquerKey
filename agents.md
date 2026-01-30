@@ -11,7 +11,7 @@ ConquerKey is a proof-of-concept (POC) Windows utility application that enables 
 3. **UI Element Discovery**: The `ActionWindow` appears on top of the currently active window and uses Windows UI Automation to find all interactable/clickable elements
 4. **Hint Display**: Each discovered element gets a numbered hint label (`HintLabel`) overlaid on it
 5. **User Input**: A `HintTextBox` appears for the user to type the number of the element they want to interact with
-6. **Action Execution**: After pressing Enter, the app simulates a click on the selected element using the appropriate `IActionHandler`
+6. **Action Execution**: When the user enters a valid element number, the action auto-executes after 0.5 seconds. The user can also press Enter for immediate execution, or press Escape to dismiss the window.
 
 ## Technology Stack
 
@@ -55,9 +55,13 @@ ConquerKey/
 - Transparent overlay window positioned exactly over the active window
 - Uses `AutomationElement.FromHandle()` to get the active window
 - Calls `IActionHandler.FindInteractableElements()` to discover clickable elements
+- Validates element bounding rectangles to skip elements with invalid positions
 - Renders numbered hint labels on each element's position
 - Contains a text box for entering the element number
+- Auto-executes action after 0.5 seconds when a valid element number is entered
+- Supports immediate execution via Enter key
 - Closes on Escape key or when losing focus
+- Uses `_isClosing` flag to prevent double-close exceptions
 
 ### IActionHandler / ClickActionHandler
 
