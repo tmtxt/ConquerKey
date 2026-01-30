@@ -32,7 +32,7 @@ public class GlobalKeyListener : IGlobalKeyListener
 
 	private IntPtr _hookId = IntPtr.Zero;
 	private readonly IServiceProvider _serviceProvider;
-	private LowLevelKeyboardProc  _lowLevelKeyboardProc;
+	private LowLevelKeyboardProc _lowLevelKeyboardProc;
 
 	public GlobalKeyListener(IServiceProvider serviceProvider)
 	{
@@ -45,15 +45,15 @@ public class GlobalKeyListener : IGlobalKeyListener
 		// For single-file published apps, use "user32.dll" as a fallback
 		// since the main module may not be accessible in the expected way
 		var moduleHandle = IntPtr.Zero;
-		
+
 		using var curProcess = Process.GetCurrentProcess();
 		using var curModule = curProcess.MainModule;
-		
+
 		if (curModule != null)
 		{
 			moduleHandle = GetModuleHandle(curModule.ModuleName);
 		}
-		
+
 		// Fallback: use IntPtr.Zero which works for global hooks
 		if (moduleHandle == IntPtr.Zero)
 		{
@@ -61,7 +61,7 @@ public class GlobalKeyListener : IGlobalKeyListener
 		}
 
 		_hookId = SetWindowsHookEx(WH_KEYBOARD_LL, _lowLevelKeyboardProc, moduleHandle, 0);
-		
+
 		if (_hookId == IntPtr.Zero)
 		{
 			throw new Exception($"Failed to set keyboard hook. Error code: {Marshal.GetLastWin32Error()}");
