@@ -47,6 +47,16 @@ public class ActionWindow : Window
 
 		void AddHintLabel(AutomationElement clickableElement, int index)
 		{
+			var boundingRect = clickableElement.Current.BoundingRectangle;
+
+			// Skip elements with invalid bounding rectangles
+			if (boundingRect.IsEmpty ||
+					double.IsNaN(boundingRect.X) || double.IsNaN(boundingRect.Y) ||
+					double.IsInfinity(boundingRect.X) || double.IsInfinity(boundingRect.Y))
+			{
+				return;
+			}
+
 			var textBlock = new TextBlock
 			{
 				Text = index.ToString(),
@@ -57,8 +67,14 @@ public class ActionWindow : Window
 				Padding = new Thickness(0),
 			};
 
-			var x = PixelToDeviceIndependentUnit(this, clickableElement.Current.BoundingRectangle.X - _activeWindow.Current.BoundingRectangle.X, false);
-			var y = PixelToDeviceIndependentUnit(this, clickableElement.Current.BoundingRectangle.Y - _activeWindow.Current.BoundingRectangle.Y, true);
+			var x = PixelToDeviceIndependentUnit(this, boundingRect.X - _activeWindow.Current.BoundingRectangle.X, false);
+			var y = PixelToDeviceIndependentUnit(this, boundingRect.Y - _activeWindow.Current.BoundingRectangle.Y, true);
+
+			// Skip if calculated positions are invalid
+			if (double.IsNaN(x) || double.IsNaN(y) || double.IsInfinity(x) || double.IsInfinity(y))
+			{
+				return;
+			}
 
 			// Set the absolute position
 			Canvas.SetLeft(textBlock, x); // X-coordinate
