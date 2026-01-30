@@ -4,6 +4,7 @@ using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using ConquerKey.ActionHandlers;
 using static ConquerKey.WindowUtilities;
 
@@ -16,6 +17,7 @@ public class ActionWindow : Window
 	private readonly AutomationElementCollection _interactableElements;
 	private readonly TextBox _hintTextBox;
 	private bool _isClosing;
+	private DispatcherTimer? _autoExecuteTimer;
 
 	[DllImport("user32.dll")]
 	private static extern IntPtr GetForegroundWindow();
@@ -125,20 +127,47 @@ public class ActionWindow : Window
 			evt.Handled = !int.TryParse(evt.Text, out _);
 		};
 
+		hintTextBox.TextChanged += (s, evt) =>
+		{
+			// Cancel any existing timer
+			_autoExecuteTimer?.Stop();
+			_autoExecuteTimer = null;
+
+			// Check if the entered number matches a valid element
+			if (!int.TryParse(hintTextBox.Text, out var elementIndex) ||
+					elementIndex < 0 || elementIndex >= _interactableElements.Count)
+			{
+				return;
+			}
+
+			// Start a 0.5s timer to auto-execute
+			_autoExecuteTimer = new DispatcherTimer
+			{
+				Interval = TimeSpan.FromMilliseconds(500)
+			};
+			_autoExecuteTimer.Tick += (_, _) =>
+			{
+				_autoExecuteTimer?.Stop();
+				ExecuteAction(elementIndex);
+			};
+			_autoExecuteTimer.Start();
+		};
+
 		hintTextBox.KeyDown += (s, evt) =>
 		{
 			if (evt.Key != Key.Enter) return;
 
-			_isClosing = true;
-			Close();
+			// Cancel the auto-execute timer since user pressed Enter
+			_autoExecuteTimer?.Stop();
+			_autoExecuteTimer = null;
 
-			// Handle the Enter key press here
-			var uiElement = _interactableElements[int.Parse(hintTextBox.Text)];
-			if (uiElement != null)
+			if (!int.TryParse(hintTextBox.Text, out var elementIndex) ||
+					elementIndex < 0 || elementIndex >= _interactableElements.Count)
 			{
-				_actionHandler.Interact(_activeWindow, uiElement);
+				return;
 			}
 
+			ExecuteAction(elementIndex);
 			evt.Handled = true; // Mark the event as handled if necessary
 		};
 
@@ -189,5 +218,17 @@ public class ActionWindow : Window
 
 		_isClosing = true;
 		Close();
+	}
+
+	private void ExecuteAction(int elementIndex)
+	{
+		_isClosing = true;
+		Close();
+
+		var uiElement = _interactableElements[elementIndex];
+		if (uiElement != null)
+		{
+			_actionHandler.Interact(_activeWindow, uiElement);
+		}
 	}
 }
