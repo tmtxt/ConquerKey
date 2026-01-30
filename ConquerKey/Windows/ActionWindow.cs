@@ -113,6 +113,7 @@ public class ActionWindow : Window
 		{
 			if (evt.Key != Key.Enter) return;
 
+			_isClosing = true;
 			Close();
 
 			// Handle the Enter key press here
