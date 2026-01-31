@@ -2,6 +2,8 @@
 
 A simple .Net app to control Windows application by keyboard
 
+![ConquerKey](ConquerKey/icon.png)
+
 ## Installation
 
 - .Net 9+ is required
