@@ -29,7 +29,7 @@ namespace ConquerKey.ActionHandlers
 				controlElementCondition,
 				visibleCondition
 			);
-			
+
 			var clickableElements = rootElement.FindAll(TreeScope.Descendants, finalCondition);
 			return clickableElements;
 		}

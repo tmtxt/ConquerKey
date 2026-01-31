@@ -6,7 +6,8 @@ using System.Windows.Media;
 
 namespace ConquerKey;
 
-public static class WindowUtilities {
+public static class WindowUtilities
+{
 
 	/// <summary>
 	/// Activates a WPF window even if the window is activated on a separate thread
@@ -41,50 +42,6 @@ public static class WindowUtilities {
 		const double defaultDpi = 96.0;
 		var pixelPerInch = isVertical ? VisualTreeHelper.GetDpi(window).PixelsPerInchY : VisualTreeHelper.GetDpi(window).PixelsPerInchX;
 		return pixel * (defaultDpi / pixelPerInch);
-	}
-
-	/// <summary>
-	/// Need to update this method. Currently, it doesn't find all the elements on CW1 UI
-	/// </summary>
-	/// <param name="rootElement"></param>
-	/// <returns></returns>
-	public static AutomationElementCollection FindClickableElements(AutomationElement rootElement)
-	{
-		// Define a condition to find elements that are clickable
-		var clickableCondition = new OrCondition(
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
-			new PropertyCondition(AutomationElement.IsInvokePatternAvailableProperty, true)
-		);
-		var visibleCondition = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
-		var controlElementCondition = new OrCondition(
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Hyperlink),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Tab),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.CheckBox),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.RadioButton),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Edit),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.ComboBox),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.ListItem),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.DataItem),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.List),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Menu),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TreeItem),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Table),
-			new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.DataGrid)
-			);
-		var finalCondition = new AndCondition(
-			controlElementCondition,
-			visibleCondition
-		);
-
-
-		// Find all matching elements
-		var clickableElements = rootElement.FindAll(TreeScope.Descendants, finalCondition);
-		var count = clickableElements.Count;
-
-		return clickableElements;
 	}
 
 	/// <summary>
