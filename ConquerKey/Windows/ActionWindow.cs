@@ -59,15 +59,35 @@ public class ActionWindow : Window
 				return;
 			}
 
+			// Create a modern styled border with text
+			var border = new Border
+			{
+				Background = new SolidColorBrush(Color.FromArgb(240, 0, 212, 255)), // Cyan with transparency
+				BorderBrush = new SolidColorBrush(Color.FromArgb(255, 0, 122, 204)), // Blue border
+				BorderThickness = new Thickness(1.5),
+				CornerRadius = new CornerRadius(4),
+				Padding = new Thickness(6, 2, 6, 2),
+				Effect = new System.Windows.Media.Effects.DropShadowEffect
+				{
+					Color = Colors.Black,
+					Direction = 315,
+					ShadowDepth = 2,
+					BlurRadius = 6,
+					Opacity = 0.5
+				}
+			};
+
 			var textBlock = new TextBlock
 			{
 				Text = index.ToString(),
-				Foreground = Brushes.Black,
-				FontSize = 12,
-				Background = Brushes.Aqua,
-				Margin = new Thickness(0),
-				Padding = new Thickness(0),
+				Foreground = new SolidColorBrush(Color.FromRgb(0, 30, 60)), // Dark blue text
+				FontSize = 11,
+				FontWeight = FontWeights.Bold,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center
 			};
+
+			border.Child = textBlock;
 
 			var x = PixelToDeviceIndependentUnit(this, boundingRect.X - _activeWindow.Current.BoundingRectangle.X, false);
 			var y = PixelToDeviceIndependentUnit(this, boundingRect.Y - _activeWindow.Current.BoundingRectangle.Y, true);
@@ -79,47 +99,79 @@ public class ActionWindow : Window
 			}
 
 			// Set the absolute position
-			Canvas.SetLeft(textBlock, x); // X-coordinate
-			Canvas.SetTop(textBlock, y); // Y-coordinate
+			Canvas.SetLeft(border, x);
+			Canvas.SetTop(border, y);
 
-			// Add the TextBlock to the Canvas
+			// Add the Border to the Canvas
 			if (Content is Canvas canvas)
 			{
-				canvas.Children.Add(textBlock);
+				canvas.Children.Add(border);
 			}
 		}
 	}
 
 	private TextBox AddHintTextBox()
 	{
-		var hintLabel = new Label
+		// Modern styled container for the input area
+		var inputContainer = new Border
 		{
-			Content = "Enter Hint:",
-			Margin = new Thickness(10),
-			Foreground = Brushes.Black,
-			FontSize = 12,
-			Background = Brushes.Chartreuse,
+			Background = new SolidColorBrush(Color.FromArgb(250, 30, 30, 30)), // Semi-transparent dark background
+			BorderBrush = new SolidColorBrush(Color.FromRgb(0, 122, 204)), // Blue border
+			BorderThickness = new Thickness(2),
+			CornerRadius = new CornerRadius(8),
+			Padding = new Thickness(15, 15, 15, 15),
+			Effect = new System.Windows.Media.Effects.DropShadowEffect
+			{
+				Color = Colors.Black,
+				Direction = 90,
+				ShadowDepth = 5,
+				BlurRadius = 15,
+				Opacity = 0.6
+			}
 		};
-		Canvas.SetLeft(hintLabel, 0); // X-coordinate
-		Canvas.SetTop(hintLabel, Height - 30); // Y-coordinate
+
+		var stackPanel = new StackPanel
+		{
+			Orientation = Orientation.Horizontal,
+			VerticalAlignment = VerticalAlignment.Center
+		};
+
+		var hintLabel = new TextBlock
+		{
+			Text = "⌨ Enter Number:",
+			Foreground = new SolidColorBrush(Color.FromRgb(0, 212, 255)), // Cyan
+			FontSize = 14,
+			FontWeight = FontWeights.SemiBold,
+			VerticalAlignment = VerticalAlignment.Center,
+			Margin = new Thickness(0, 0, 12, 0)
+		};
 
 		var hintTextBox = new TextBox
 		{
-			FontSize = 12,
-			Width = 200,
-			Height = 30,
-			Margin = new Thickness(10),
-			Padding = new Thickness(5),
-			Background = Brushes.LightGray,
-			Foreground = Brushes.Black,
+			FontSize = 16,
+			FontWeight = FontWeights.Bold,
+			Width = 150,
+			Height = 35,
+			Padding = new Thickness(10, 5, 10, 5),
+			Background = new SolidColorBrush(Color.FromRgb(45, 45, 48)),
+			Foreground = new SolidColorBrush(Color.FromRgb(255, 255, 255)),
+			BorderBrush = new SolidColorBrush(Color.FromRgb(0, 212, 255)),
+			BorderThickness = new Thickness(2),
+			CaretBrush = new SolidColorBrush(Color.FromRgb(0, 212, 255)),
+			VerticalContentAlignment = VerticalAlignment.Center
 		};
-		Canvas.SetLeft(hintTextBox, 80); // X-coordinate
-		Canvas.SetTop(hintTextBox, Height - 30); // Y-coordinate
+
+		stackPanel.Children.Add(hintLabel);
+		stackPanel.Children.Add(hintTextBox);
+		inputContainer.Child = stackPanel;
+
+		// Position at bottom center
+		Canvas.SetLeft(inputContainer, (Width - 320) / 2);
+		Canvas.SetBottom(inputContainer, 20);
 
 		if (Content is Canvas canvas)
 		{
-			canvas.Children.Add(hintLabel);
-			canvas.Children.Add(hintTextBox);
+			canvas.Children.Add(inputContainer);
 		}
 
 		hintTextBox.PreviewTextInput += (s, evt) =>
@@ -178,21 +230,40 @@ public class ActionWindow : Window
 	{
 		Topmost = true;
 		Width = PixelToDeviceIndependentUnit(this, _activeWindow.Current.BoundingRectangle.Width, false);
-		// + 30 for textbox to input the hint number
-		Height = PixelToDeviceIndependentUnit(this, _activeWindow.Current.BoundingRectangle.Height + 30, true);
+		// + 80 for better spacing with the modern input box
+		Height = PixelToDeviceIndependentUnit(this, _activeWindow.Current.BoundingRectangle.Height + 80, true);
 		Left = PixelToDeviceIndependentUnit(this, _activeWindow.Current.BoundingRectangle.Left, false);
 		Top = PixelToDeviceIndependentUnit(this, _activeWindow.Current.BoundingRectangle.Top, true);
 		WindowStyle = WindowStyle.None;
 		AllowsTransparency = true;
-		Background = Brushes.Transparent;
+		Background = new SolidColorBrush(Color.FromArgb(25, 0, 0, 0)); // Subtle dark overlay
 
 		var canvas = new Canvas();
 
+		// Modern border with gradient effect
 		var border = new Border
 		{
-			BorderBrush = Brushes.White,
-			BorderThickness = new Thickness(10),
-			CornerRadius = new CornerRadius(5)
+			BorderBrush = new LinearGradientBrush
+			{
+				StartPoint = new Point(0, 0),
+				EndPoint = new Point(1, 1),
+				GradientStops = new GradientStopCollection
+				{
+					new GradientStop(Color.FromRgb(0, 212, 255), 0.0),  // Cyan
+					new GradientStop(Color.FromRgb(0, 122, 204), 0.5),  // Blue
+					new GradientStop(Color.FromRgb(104, 33, 122), 1.0)  // Purple
+				}
+			},
+			BorderThickness = new Thickness(3),
+			CornerRadius = new CornerRadius(8),
+			Effect = new System.Windows.Media.Effects.DropShadowEffect
+			{
+				Color = Color.FromRgb(0, 212, 255),
+				Direction = 0,
+				ShadowDepth = 0,
+				BlurRadius = 20,
+				Opacity = 0.7
+			}
 		};
 		canvas.Children.Add(border);
 		Content = canvas;
