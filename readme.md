@@ -1,20 +1,29 @@
+# ConquerKey
+
 A simple .Net app to control Windows application by keyboard
 
-It's currently in a very basic form, just like a POC
+## Installation
+
+- .Net 9+ is required
+- Download the latest executable from Releases page
+
+## Development
+
+Use the agents.md file to work with Copilot
 
 To publish
 
 - Update the version in csproj file
 - Tag the release
 
-```
+```console
 git tag -a v1.0.0 -m "Release version 1.0.0"
 git push origin v1.0.0
 ```
 
 - Build the exe
 
-```
+```console
 dotnet publish -c Release
 ```
 
