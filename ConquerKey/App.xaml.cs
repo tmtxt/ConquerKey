@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using ConquerKey.ActionHandlers;
 using ConquerKey.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Application = System.Windows.Application;
@@ -22,12 +21,13 @@ public partial class App : Application
 
 	private void ConfigureServices(IServiceCollection services)
 	{
+		// Create and configure plugin manager
+		var pluginManager = new PluginManager();
+		pluginManager.LoadPlugins();
+
+		services.AddSingleton(pluginManager);
 		services.AddSingleton<MainWindow>();
 		services.AddSingleton<IGlobalKeyListener, GlobalKeyListener>();
-		
-		services.AddTransient<ClickActionHandler>();
-		services.AddKeyedTransient<Windows.ActionWindow>(Actions.Click,
-			(provider, _) => new Windows.ActionWindow(provider.GetRequiredService<ClickActionHandler>()));
 	}
 
 	protected override void OnStartup(StartupEventArgs e)

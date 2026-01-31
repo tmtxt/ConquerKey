@@ -12,7 +12,7 @@ namespace ConquerKey.Windows;
 
 public class ActionWindow : Window
 {
-	private readonly IActionHandler _actionHandler;
+	private readonly IConquerKeyPlugin _plugin;
 	private readonly AutomationElement _activeWindow;
 	private readonly AutomationElementCollection _interactableElements;
 	private readonly TextBox _hintTextBox;
@@ -22,13 +22,13 @@ public class ActionWindow : Window
 	[DllImport("user32.dll")]
 	private static extern IntPtr GetForegroundWindow();
 
-	public ActionWindow(IActionHandler actionHandler)
+	public ActionWindow(IConquerKeyPlugin plugin)
 	{
-		_actionHandler = actionHandler;
+		_plugin = plugin;
 
 		var foregroundWindow = GetForegroundWindow();
 		_activeWindow = AutomationElement.FromHandle(foregroundWindow);
-		_interactableElements = actionHandler.FindInteractableElements(_activeWindow);
+		_interactableElements = plugin.FindInteractableElements(_activeWindow);
 
 		Activated += ActionWindow_Activated;
 		Deactivated += ActionWindow_Deactivated;
@@ -228,7 +228,7 @@ public class ActionWindow : Window
 		var uiElement = _interactableElements[elementIndex];
 		if (uiElement != null)
 		{
-			_actionHandler.Interact(_activeWindow, uiElement);
+			_plugin.Interact(_activeWindow, uiElement);
 		}
 	}
 }

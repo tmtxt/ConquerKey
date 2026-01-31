@@ -32,11 +32,13 @@ public class GlobalKeyListener : IGlobalKeyListener
 
 	private IntPtr _hookId = IntPtr.Zero;
 	private readonly IServiceProvider _serviceProvider;
+	private readonly PluginManager _pluginManager;
 	private LowLevelKeyboardProc _lowLevelKeyboardProc;
 
-	public GlobalKeyListener(IServiceProvider serviceProvider)
+	public GlobalKeyListener(IServiceProvider serviceProvider, PluginManager pluginManager)
 	{
 		_serviceProvider = serviceProvider;
+		_pluginManager = pluginManager;
 		_lowLevelKeyboardProc = HookCallback;
 	}
 
@@ -87,12 +89,23 @@ public class GlobalKeyListener : IGlobalKeyListener
 		}
 
 		var vkCode = Marshal.ReadInt32(lParam);
-		if ((Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin)) &&
-			vkCode == KeyInterop.VirtualKeyFromKey(Key.F))
+		var key = KeyInterop.KeyFromVirtualKey(vkCode);
+
+		// Build the current modifier keys state
+		var modifiers = ModifierKeys.None;
+		if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+			modifiers |= ModifierKeys.Control;
+		if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
+			modifiers |= ModifierKeys.Alt;
+		if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+			modifiers |= ModifierKeys.Shift;
+		if (Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin))
+			modifiers |= ModifierKeys.Windows;
+
+		// Try to find a plugin matching the current key combination
+		if (_pluginManager.TryGetPlugin(modifiers, key, out var plugin) && plugin != null)
 		{
-			// var clickActionWindow = _serviceProvider.GetRequiredService<ClickActionWindow>();
-			// clickActionWindow.Show();
-			var actionWindow = _serviceProvider.GetRequiredKeyedService<Windows.ActionWindow>(Actions.Click);
+			var actionWindow = new Windows.ActionWindow(plugin);
 			actionWindow.Show();
 			WindowUtilities.ActivateWindow(actionWindow);
 		}
