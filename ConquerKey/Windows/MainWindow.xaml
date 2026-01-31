@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ConquerKey"
         mc:Ignorable="d"
-
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow"
+        Height="450"
+        Width="800">
     <Grid>
         <TextBlock
-            Text="Open any application and then press Ctrl+Windows+T to activate the hint window.&#x0a;Select the element you want to interact with and then press Enter"
+            Text="Open any application and then press Windows+F to activate the hint window.&#x0a;Select the element you want to interact with and then press Enter"
             FontSize="16">
         </TextBlock>
     </Grid>
