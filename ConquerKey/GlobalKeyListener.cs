@@ -105,7 +105,7 @@ public class GlobalKeyListener : IGlobalKeyListener
 		// Try to find a plugin matching the current key combination
 		if (_pluginManager.TryGetPlugin(modifiers, key, out var plugin) && plugin != null)
 		{
-			var actionWindow = new Windows.ActionWindow(plugin);
+			var actionWindow = ActivatorUtilities.CreateInstance<Windows.ActionWindow>(_serviceProvider, plugin);
 			actionWindow.Show();
 			WindowUtilities.ActivateWindow(actionWindow);
 		}
