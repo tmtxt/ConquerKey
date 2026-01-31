@@ -10,28 +10,29 @@
         Width="700"
         Background="#1E1E1E"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="CanMinimize">
+        ResizeMode="CanMinimize"
+        Icon="pack://application:,,,/icon.ico">
 
     <Window.Resources>
         <!-- Modern color scheme -->
         <SolidColorBrush x:Key="PrimaryBrush"
-                Color="#007ACC"/>
+                         Color="#007ACC"/>
         <SolidColorBrush x:Key="SecondaryBrush"
-                Color="#68217A"/>
+                         Color="#68217A"/>
         <SolidColorBrush x:Key="AccentBrush"
-                Color="#00D4FF"/>
+                         Color="#00D4FF"/>
         <SolidColorBrush x:Key="BackgroundBrush"
-                Color="#1E1E1E"/>
+                         Color="#1E1E1E"/>
         <SolidColorBrush x:Key="SurfaceBrush"
-                Color="#252526"/>
+                         Color="#252526"/>
         <SolidColorBrush x:Key="TextPrimaryBrush"
-                Color="#FFFFFF"/>
+                         Color="#FFFFFF"/>
         <SolidColorBrush x:Key="TextSecondaryBrush"
-                Color="#CCCCCC"/>
+                         Color="#CCCCCC"/>
 
         <!-- Modern button style -->
         <Style x:Key="ModernButton"
-                TargetType="Button">
+               TargetType="Button">
             <Setter Property="Background"
                     Value="{StaticResource PrimaryBrush}"/>
             <Setter Property="Foreground"
@@ -53,14 +54,14 @@
                                 CornerRadius="4"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
+                                              VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver"
-                        Value="True">
+                         Value="True">
                     <Setter Property="Background"
                             Value="{StaticResource AccentBrush}"/>
                 </Trigger>
@@ -117,22 +118,22 @@
                             <Run Text="1. Open any Windows application you want to control"/>
                             <LineBreak/>
                             <Run Text="2. Press "
-                                    Foreground="{StaticResource TextPrimaryBrush}"/>
+                                 Foreground="{StaticResource TextPrimaryBrush}"/>
                             <Run Text="Win + F"
-                                    FontWeight="Bold"
-                                    Foreground="{StaticResource AccentBrush}"/>
+                                 FontWeight="Bold"
+                                 Foreground="{StaticResource AccentBrush}"/>
                             <Run Text=" to activate ConquerKey"
-                                    Foreground="{StaticResource TextPrimaryBrush}"/>
+                                 Foreground="{StaticResource TextPrimaryBrush}"/>
                             <LineBreak/>
                             <Run Text="3. Type the number of the element you want to interact with"/>
                             <LineBreak/>
                             <Run Text="4. Press "
-                                    Foreground="{StaticResource TextPrimaryBrush}"/>
+                                 Foreground="{StaticResource TextPrimaryBrush}"/>
                             <Run Text="Enter"
-                                    FontWeight="Bold"
-                                    Foreground="{StaticResource AccentBrush}"/>
+                                 FontWeight="Bold"
+                                 Foreground="{StaticResource AccentBrush}"/>
                             <Run Text=" to execute (or wait 0.5s for auto-execute)"
-                                    Foreground="{StaticResource TextPrimaryBrush}"/>
+                                 Foreground="{StaticResource TextPrimaryBrush}"/>
                         </TextBlock>
                     </StackPanel>
                 </Border>

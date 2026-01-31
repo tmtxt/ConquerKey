@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
+        <ApplicationIcon>icon.ico</ApplicationIcon>
         
         <!-- Versioning -->
         <Version>0.0.3</Version>
@@ -28,6 +29,10 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Resource Include="icon.ico" />
     </ItemGroup>
 
     <ItemGroup>
