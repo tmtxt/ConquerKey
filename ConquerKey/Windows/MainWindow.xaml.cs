@@ -11,16 +11,4 @@ public partial class MainWindow : Window
 	{
 		InitializeComponent();
 	}
-
-	private void ShowHintWindow()
-	{
-		var activeWindow = WindowUtilities.GetActiveWindow();
-		var hintWindow = new HintWindow(activeWindow);
-		// hintWindow.Topmost = true;
-		hintWindow.Show();
-		// hintWindow.Activate();
-		WindowUtilities.ActivateWindow(hintWindow);
-	}
-
-
 }
