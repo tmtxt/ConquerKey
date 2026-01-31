@@ -5,13 +5,192 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ConquerKey"
         mc:Ignorable="d"
-        Title="MainWindow"
-        Height="450"
-        Width="800">
+        Title="ConquerKey - Keyboard Navigation for Windows"
+        Height="550"
+        Width="700"
+        Background="#1E1E1E"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize">
+
+    <Window.Resources>
+        <!-- Modern color scheme -->
+        <SolidColorBrush x:Key="PrimaryBrush"
+                Color="#007ACC"/>
+        <SolidColorBrush x:Key="SecondaryBrush"
+                Color="#68217A"/>
+        <SolidColorBrush x:Key="AccentBrush"
+                Color="#00D4FF"/>
+        <SolidColorBrush x:Key="BackgroundBrush"
+                Color="#1E1E1E"/>
+        <SolidColorBrush x:Key="SurfaceBrush"
+                Color="#252526"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush"
+                Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush"
+                Color="#CCCCCC"/>
+
+        <!-- Modern button style -->
+        <Style x:Key="ModernButton"
+                TargetType="Button">
+            <Setter Property="Background"
+                    Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Foreground"
+                    Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="FontSize"
+                    Value="14"/>
+            <Setter Property="FontWeight"
+                    Value="SemiBold"/>
+            <Setter Property="Padding"
+                    Value="20,10"/>
+            <Setter Property="BorderThickness"
+                    Value="0"/>
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                        Value="True">
+                    <Setter Property="Background"
+                            Value="{StaticResource AccentBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        <TextBlock
-            Text="Open any application and then press Windows+F to activate the hint window.&#x0a;Select the element you want to interact with and then press Enter"
-            FontSize="16">
-        </TextBlock>
+        <!-- Header -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Section -->
+        <Border Grid.Row="0"
+                Background="{StaticResource SurfaceBrush}"
+                Padding="30,25">
+            <StackPanel>
+                <TextBlock Text="⌨ ConquerKey"
+                           FontSize="32"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource AccentBrush}"
+                           HorizontalAlignment="Center"/>
+                <TextBlock Text="Keyboard-Driven Navigation for Windows Applications"
+                           FontSize="14"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           HorizontalAlignment="Center"
+                           Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content -->
+        <Border Grid.Row="1"
+                Padding="40,30">
+            <StackPanel>
+                <!-- Getting Started Section -->
+                <TextBlock Text="Getting Started"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           Margin="0,0,0,15"/>
+
+                <Border Background="{StaticResource SurfaceBrush}"
+                        CornerRadius="8"
+                        Padding="20"
+                        Margin="0,0,0,20">
+                    <StackPanel>
+                        <TextBlock TextWrapping="Wrap"
+                                   FontSize="14"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   LineHeight="24">
+                            <Run Text="1. Open any Windows application you want to control"/>
+                            <LineBreak/>
+                            <Run Text="2. Press "
+                                    Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <Run Text="Win + F"
+                                    FontWeight="Bold"
+                                    Foreground="{StaticResource AccentBrush}"/>
+                            <Run Text=" to activate ConquerKey"
+                                    Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <LineBreak/>
+                            <Run Text="3. Type the number of the element you want to interact with"/>
+                            <LineBreak/>
+                            <Run Text="4. Press "
+                                    Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <Run Text="Enter"
+                                    FontWeight="Bold"
+                                    Foreground="{StaticResource AccentBrush}"/>
+                            <Run Text=" to execute (or wait 0.5s for auto-execute)"
+                                    Foreground="{StaticResource TextPrimaryBrush}"/>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <!-- Features Section -->
+                <TextBlock Text="Features"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           Margin="0,10,0,15"/>
+
+                <Border Background="{StaticResource SurfaceBrush}"
+                        CornerRadius="8"
+                        Padding="20">
+                    <StackPanel>
+                        <TextBlock Text="✓ Click buttons without touching your mouse"
+                                   FontSize="14"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock Text="✓ Navigate complex UIs with keyboard shortcuts"
+                                   FontSize="14"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock Text="✓ Plugin system for custom actions"
+                                   FontSize="14"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock Text="✓ Works with any Windows application"
+                                   FontSize="14"
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- Footer -->
+        <Border Grid.Row="2"
+                Background="{StaticResource SurfaceBrush}"
+                Padding="30,15"
+                BorderThickness="0,1,0,0"
+                BorderBrush="#333333">
+            <Grid>
+                <TextBlock Text="ConquerKey is running in the background"
+                           FontSize="12"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <Button Content="Minimize to Tray"
+                            Style="{StaticResource ModernButton}"
+                            Click="MinimizeButton_Click"
+                            Margin="0,0,10,0"/>
+                    <Button Content="Exit"
+                            Style="{StaticResource ModernButton}"
+                            Background="{StaticResource SecondaryBrush}"
+                            Click="ExitButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </Window>
