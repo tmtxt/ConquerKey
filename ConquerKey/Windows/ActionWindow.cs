@@ -27,9 +27,6 @@ public class ActionWindow : Window
 	/// </summary>
 	private static string IndexToAlphaLabel(int index)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index), "Index must be non-negative");
-
 		var result = string.Empty;
 		do
 		{
