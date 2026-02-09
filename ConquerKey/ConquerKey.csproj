@@ -17,7 +17,7 @@
         
         <!-- Publishing Options -->
         <PublishUrl>releases\</PublishUrl>
-        <SelfContained>true</SelfContained>
+        <SelfContained>false</SelfContained>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <PublishSingleFile>true</PublishSingleFile>
         <UseAppHost>true</UseAppHost>
