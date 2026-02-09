@@ -22,6 +22,45 @@ public class ActionWindow : Window
 	[DllImport("user32.dll")]
 	private static extern IntPtr GetForegroundWindow();
 
+	/// <summary>
+	/// Converts an index to an alphabetic label (0->A, 1->B, ..., 25->Z, 26->AA, 27->AB, etc.)
+	/// </summary>
+	private static string IndexToAlphaLabel(int index)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index), "Index must be non-negative");
+
+		var result = string.Empty;
+		do
+		{
+			result = (char)('A' + (index % 26)) + result;
+			index = index / 26 - 1;
+		} while (index >= 0);
+
+		return result;
+	}
+
+	/// <summary>
+	/// Converts an alphabetic label to an index (A->0, B->1, ..., Z->25, AA->26, AB->27, etc.)
+	/// Returns -1 if the input is invalid.
+	/// </summary>
+	private static int AlphaLabelToIndex(string label)
+	{
+		if (string.IsNullOrWhiteSpace(label))
+			return -1;
+
+		label = label.ToUpperInvariant();
+		if (!label.All(c => c >= 'A' && c <= 'Z'))
+			return -1;
+
+		var index = 0;
+		for (var i = 0; i < label.Length; i++)
+		{
+			index = index * 26 + (label[i] - 'A' + 1);
+		}
+		return index - 1;
+	}
+
 	public ActionWindow(IConquerKeyPlugin plugin)
 	{
 		_plugin = plugin;
@@ -79,9 +118,7 @@ public class ActionWindow : Window
 
 			var textBlock = new TextBlock
 			{
-				Text = index.ToString(),
-				Foreground = new SolidColorBrush(Color.FromRgb(0, 30, 60)), // Dark blue text
-				FontSize = 11,
+				Text = IndexToAlphaLabel(index),
 				FontWeight = FontWeights.Bold,
 				HorizontalAlignment = HorizontalAlignment.Center,
 				VerticalAlignment = VerticalAlignment.Center
@@ -138,7 +175,7 @@ public class ActionWindow : Window
 
 		var hintLabel = new TextBlock
 		{
-			Text = "⌨ Enter Number:",
+			Text = "⌨ Enter Code:",
 			Foreground = new SolidColorBrush(Color.FromRgb(0, 212, 255)), // Cyan
 			FontSize = 14,
 			FontWeight = FontWeights.SemiBold,
@@ -176,7 +213,8 @@ public class ActionWindow : Window
 
 		hintTextBox.PreviewTextInput += (s, evt) =>
 		{
-			evt.Handled = !int.TryParse(evt.Text, out _);
+			// Only allow alphabetic characters
+			evt.Handled = !evt.Text.All(c => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
 		};
 
 		hintTextBox.TextChanged += (s, evt) =>
@@ -185,9 +223,9 @@ public class ActionWindow : Window
 			_autoExecuteTimer?.Stop();
 			_autoExecuteTimer = null;
 
-			// Check if the entered number matches a valid element
-			if (!int.TryParse(hintTextBox.Text, out var elementIndex) ||
-					elementIndex < 0 || elementIndex >= _interactableElements.Count)
+			// Check if the entered code matches a valid element
+			var elementIndex = AlphaLabelToIndex(hintTextBox.Text);
+			if (elementIndex < 0 || elementIndex >= _interactableElements.Count)
 			{
 				return;
 			}
@@ -213,8 +251,8 @@ public class ActionWindow : Window
 			_autoExecuteTimer?.Stop();
 			_autoExecuteTimer = null;
 
-			if (!int.TryParse(hintTextBox.Text, out var elementIndex) ||
-					elementIndex < 0 || elementIndex >= _interactableElements.Count)
+			var elementIndex = AlphaLabelToIndex(hintTextBox.Text);
+			if (elementIndex < 0 || elementIndex >= _interactableElements.Count)
 			{
 				return;
 			}
