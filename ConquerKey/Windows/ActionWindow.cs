@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -22,27 +21,6 @@ public class ActionWindow : Window
 
 	[DllImport("user32.dll")]
 	private static extern IntPtr GetForegroundWindow();
-
-	/// <summary>
-	/// Converts an index to an alphabetic label (0->A, 1->B, ..., 25->Z, 26->AA, 27->AB, etc.)
-	/// </summary>
-	private static string IndexToAlphaLabel(int index)
-	{
-		var sb = new StringBuilder();
-		do
-		{
-			sb.Append((char)('A' + (index % 26)));
-			index = index / 26 - 1;
-		} while (index >= 0);
-
-		// Reverse the string since we built it backwards
-		for (var i = 0; i < sb.Length / 2; i++)
-		{
-			(sb[i], sb[sb.Length - 1 - i]) = (sb[sb.Length - 1 - i], sb[i]);
-		}
-
-		return sb.ToString();
-	}
 
 	/// <summary>
 	/// Increments an alphabetic label to the next label (A->B, Z->AA, AZ->BA, etc.)
