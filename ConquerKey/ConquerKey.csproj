@@ -9,9 +9,9 @@
         <ApplicationIcon>icon.ico</ApplicationIcon>
         
         <!-- Versioning -->
-        <Version>0.0.5</Version>
-        <AssemblyVersion>0.0.5.0</AssemblyVersion>
-        <FileVersion>0.0.5.0</FileVersion>
+        <Version>0.0.6</Version>
+        <AssemblyVersion>0.0.6.0</AssemblyVersion>
+        <FileVersion>0.0.6.0</FileVersion>
         <ProductName>ConquerKey</ProductName>
         <Company>ConquerKey</Company>
         
