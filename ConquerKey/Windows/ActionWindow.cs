@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -27,14 +28,46 @@ public class ActionWindow : Window
 	/// </summary>
 	private static string IndexToAlphaLabel(int index)
 	{
-		var result = string.Empty;
+		var sb = new StringBuilder();
 		do
 		{
-			result = (char)('A' + (index % 26)) + result;
+			sb.Append((char)('A' + (index % 26)));
 			index = index / 26 - 1;
 		} while (index >= 0);
 
-		return result;
+		// Reverse the string since we built it backwards
+		for (var i = 0; i < sb.Length / 2; i++)
+		{
+			(sb[i], sb[sb.Length - 1 - i]) = (sb[sb.Length - 1 - i], sb[i]);
+		}
+
+		return sb.ToString();
+	}
+
+	/// <summary>
+	/// Increments an alphabetic label to the next label (A->B, Z->AA, AZ->BA, etc.)
+	/// </summary>
+	private static string IncrementAlphaLabel(string label)
+	{
+		var chars = label.ToCharArray();
+
+		// Start from the rightmost character and increment
+		for (var i = chars.Length - 1; i >= 0; i--)
+		{
+			if (chars[i] < 'Z')
+			{
+				// No carry needed, just increment this character
+				chars[i]++;
+				return new string(chars);
+			}
+
+			// Carry over: Z becomes A
+			chars[i] = 'A';
+		}
+
+		// If we get here, all characters were Z, so we need an extra character
+		// e.g., Z -> AA, ZZ -> AAA
+		return new string('A', chars.Length + 1);
 	}
 
 	/// <summary>
@@ -77,13 +110,15 @@ public class ActionWindow : Window
 
 	private void AddHintLabels()
 	{
+		var label = "A";
 		for (var index = 0; index < _interactableElements.Count; index++)
 		{
 			var clickableElement = _interactableElements[index];
-			AddHintLabel(clickableElement, index);
+			AddHintLabel(clickableElement, label);
+			label = IncrementAlphaLabel(label);
 		}
 
-		void AddHintLabel(AutomationElement clickableElement, int index)
+		void AddHintLabel(AutomationElement clickableElement, string label)
 		{
 			var boundingRect = clickableElement.Current.BoundingRectangle;
 
@@ -115,7 +150,7 @@ public class ActionWindow : Window
 
 			var textBlock = new TextBlock
 			{
-				Text = IndexToAlphaLabel(index),
+				Text = label,
 				FontWeight = FontWeights.Bold,
 				HorizontalAlignment = HorizontalAlignment.Center,
 				VerticalAlignment = VerticalAlignment.Center
