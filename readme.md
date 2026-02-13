@@ -2,7 +2,7 @@
 
 A simple .Net app to control Windows application by keyboard
 
-![ConquerKey](ConquerKey/icon.png)
+![ConquerKey](preview.png)
 
 ## Installation
 
