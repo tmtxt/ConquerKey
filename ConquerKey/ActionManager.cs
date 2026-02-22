@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Windows.Input;
 using ConquerKey.ActionHandlers;
@@ -9,7 +8,7 @@ namespace ConquerKey;
 
 /// <summary>
 /// Manages action discovery and registration.
-/// Scans the entry assembly for built-in actions and loads external actions from ~/.conquerkey/plugins.
+/// Scans the entry assembly for built-in actions.
 /// Resolves effective key bindings by applying user overrides from ~/.conquerkey.json.
 /// </summary>
 public class ActionManager
@@ -39,7 +38,6 @@ public class ActionManager
 	public void LoadActions()
 	{
 		LoadActionsFromAssembly(Assembly.GetEntryAssembly());
-		LoadExternalActions();
 		ResolveKeyBindings();
 	}
 
@@ -116,44 +114,5 @@ public class ActionManager
 		{
 			Debug.WriteLine($"Failed to load some types from assembly {assembly.FullName}: {ex.Message}");
 		}
-	}
-
-	private void LoadExternalActions()
-	{
-		var pluginsFolder = GetPluginsFolder();
-
-		if (!Directory.Exists(pluginsFolder))
-		{
-			try
-			{
-				Directory.CreateDirectory(pluginsFolder);
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine($"Failed to create plugins folder: {ex.Message}");
-			}
-			return;
-		}
-
-		var dllFiles = Directory.GetFiles(pluginsFolder, "*.dll");
-
-		foreach (var dllFile in dllFiles)
-		{
-			try
-			{
-				var assembly = Assembly.LoadFrom(dllFile);
-				LoadActionsFromAssembly(assembly);
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine($"Failed to load action assembly {dllFile}: {ex.Message}");
-			}
-		}
-	}
-
-	private static string GetPluginsFolder()
-	{
-		var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-		return Path.Combine(userProfile, ".conquerkey", "plugins");
 	}
 }

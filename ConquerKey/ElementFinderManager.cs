@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using ConquerKey.ActionHandlers;
 
@@ -7,7 +6,7 @@ namespace ConquerKey;
 
 /// <summary>
 /// Manages IElementFinder discovery via reflection.
-/// Discovers implementations from the entry assembly and external plugin DLLs.
+/// Discovers implementations from the entry assembly.
 /// Does not include a default fallback -- each action provides its own via DefaultElementFinder.
 /// </summary>
 public class ElementFinderManager
@@ -25,7 +24,6 @@ public class ElementFinderManager
 	public void LoadFinders()
 	{
 		LoadFindersFromAssembly(Assembly.GetEntryAssembly());
-		LoadExternalFinders();
 	}
 
 	private void LoadFindersFromAssembly(Assembly? assembly)
@@ -57,30 +55,5 @@ public class ElementFinderManager
 		{
 			Debug.WriteLine($"Failed to load types from assembly {assembly.FullName}: {ex.Message}");
 		}
-	}
-
-	private void LoadExternalFinders()
-	{
-		var pluginsFolder = GetPluginsFolder();
-		if (!Directory.Exists(pluginsFolder)) return;
-
-		foreach (var dllFile in Directory.GetFiles(pluginsFolder, "*.dll"))
-		{
-			try
-			{
-				var assembly = Assembly.LoadFrom(dllFile);
-				LoadFindersFromAssembly(assembly);
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine($"Failed to load finder assembly {dllFile}: {ex.Message}");
-			}
-		}
-	}
-
-	private static string GetPluginsFolder()
-	{
-		var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-		return Path.Combine(userProfile, ".conquerkey", "plugins");
 	}
 }
