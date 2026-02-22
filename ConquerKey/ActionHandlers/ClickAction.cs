@@ -27,38 +27,91 @@ public class ClickAction : IConquerKeyAction
 	/// <summary>
 	/// Default element finder for the Click action.
 	/// Discovers common interactable UI control types (buttons, links, inputs, etc.).
+	/// Uses depth-limited TreeWalker traversal with offscreen subtree pruning for performance.
 	/// </summary>
 	private class ClickDefaultElementFinder : IElementFinder
 	{
+		private const int MaxDepth = 25;
+
+		private static readonly HashSet<ControlType> TargetControlTypes =
+		[
+			ControlType.Button,
+			ControlType.Hyperlink,
+			ControlType.Tab,
+			ControlType.TabItem,
+			ControlType.CheckBox,
+			ControlType.RadioButton,
+			ControlType.Edit,
+			ControlType.ComboBox,
+			ControlType.ListItem,
+			ControlType.DataItem,
+			ControlType.MenuItem,
+			ControlType.List,
+			ControlType.Menu,
+			ControlType.TreeItem,
+			ControlType.Table,
+			ControlType.DataGrid
+		];
+
 		public bool CanHandle(AutomationElement rootElement) => true;
 
-		public AutomationElementCollection FindElements(AutomationElement window, AutomationElement element)
+		public IReadOnlyList<AutomationElement> FindElements(AutomationElement window, AutomationElement element)
 		{
-			var visibleCondition = new PropertyCondition(AutomationElement.IsOffscreenProperty, false);
-			var controlElementCondition = new OrCondition(
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Hyperlink),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Tab),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.CheckBox),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.RadioButton),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Edit),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.ComboBox),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.ListItem),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.DataItem),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.MenuItem),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.List),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Menu),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TreeItem),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Table),
-				new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.DataGrid)
-			);
-			var finalCondition = new AndCondition(
-				controlElementCondition,
-				visibleCondition
-			);
+			var results = new List<AutomationElement>();
+			WalkTree(element, results, 0);
+			return results;
+		}
 
-			return element.FindAll(TreeScope.Descendants, finalCondition);
+		private static void WalkTree(AutomationElement parent, List<AutomationElement> results, int depth)
+		{
+			if (depth > MaxDepth) return;
+
+			var walker = TreeWalker.ControlViewWalker;
+			AutomationElement? child;
+
+			try
+			{
+				child = walker.GetFirstChild(parent);
+			}
+			catch
+			{
+				return;
+			}
+
+			while (child != null)
+			{
+				try
+				{
+					var current = child.Current;
+
+					// Skip offscreen elements and their entire subtree
+					if (current.IsOffscreen)
+					{
+						child = walker.GetNextSibling(child);
+						continue;
+					}
+
+					if (TargetControlTypes.Contains(current.ControlType))
+					{
+						results.Add(child);
+					}
+
+					WalkTree(child, results, depth + 1);
+				}
+				catch
+				{
+					// Element may have become stale during traversal
+				}
+
+				try
+				{
+					child = walker.GetNextSibling(child);
+				}
+				catch
+				{
+					break;
+				}
+			}
 		}
 	}
 }

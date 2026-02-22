@@ -14,7 +14,7 @@ public class ActionWindow : Window
 {
 	private readonly IConquerKeyAction _action;
 	private readonly AutomationElement _activeWindow;
-	private readonly AutomationElementCollection _interactableElements;
+	private readonly IReadOnlyList<AutomationElement> _interactableElements;
 	private readonly TextBox _hintTextBox;
 	private bool _isClosing;
 	private DispatcherTimer? _autoExecuteTimer;

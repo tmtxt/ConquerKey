@@ -19,6 +19,6 @@ public interface IElementFinder
   /// </summary>
   /// <param name="window">The parent window containing the element.</param>
   /// <param name="element">The element to search within.</param>
-  /// <returns>A collection of automation elements.</returns>
-  AutomationElementCollection FindElements(AutomationElement window, AutomationElement element);
+  /// <returns>A list of matching automation elements.</returns>
+  IReadOnlyList<AutomationElement> FindElements(AutomationElement window, AutomationElement element);
 }
