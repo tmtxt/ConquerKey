@@ -12,7 +12,7 @@ namespace ConquerKey.Windows;
 
 public class ActionWindow : Window
 {
-	private readonly IConquerKeyPlugin _plugin;
+	private readonly IConquerKeyAction _action;
 	private readonly AutomationElement _activeWindow;
 	private readonly AutomationElementCollection _interactableElements;
 	private readonly TextBox _hintTextBox;
@@ -69,13 +69,26 @@ public class ActionWindow : Window
 		return index - 1;
 	}
 
-	public ActionWindow(IConquerKeyPlugin plugin)
+	public ActionWindow(IConquerKeyAction action, ElementFinderManager elementFinderManager)
 	{
-		_plugin = plugin;
+		_action = action;
 
 		var foregroundWindow = GetForegroundWindow();
 		_activeWindow = AutomationElement.FromHandle(foregroundWindow);
-		_interactableElements = plugin.FindInteractableElements(_activeWindow);
+
+		// Find the appropriate element finder: use the first discovered finder that can handle
+		// the active window, or fall back to the action's own default finder.
+		IElementFinder selectedFinder = action.DefaultElementFinder;
+		foreach (var finder in elementFinderManager.Finders)
+		{
+			if (finder.CanHandle(_activeWindow))
+			{
+				selectedFinder = finder;
+				break;
+			}
+		}
+
+		_interactableElements = selectedFinder.FindElements(_activeWindow, _activeWindow);
 
 		Activated += ActionWindow_Activated;
 		Deactivated += ActionWindow_Deactivated;
@@ -347,7 +360,7 @@ public class ActionWindow : Window
 		var uiElement = _interactableElements[elementIndex];
 		if (uiElement != null)
 		{
-			_plugin.Interact(_activeWindow, uiElement);
+			_action.Interact(_activeWindow, uiElement);
 		}
 	}
 }

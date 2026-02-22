@@ -32,13 +32,13 @@ public class GlobalKeyListener : IGlobalKeyListener
 
 	private IntPtr _hookId = IntPtr.Zero;
 	private readonly IServiceProvider _serviceProvider;
-	private readonly PluginManager _pluginManager;
+	private readonly ActionManager _actionManager;
 	private LowLevelKeyboardProc _lowLevelKeyboardProc;
 
-	public GlobalKeyListener(IServiceProvider serviceProvider, PluginManager pluginManager)
+	public GlobalKeyListener(IServiceProvider serviceProvider, ActionManager actionManager)
 	{
 		_serviceProvider = serviceProvider;
-		_pluginManager = pluginManager;
+		_actionManager = actionManager;
 		_lowLevelKeyboardProc = HookCallback;
 	}
 
@@ -102,10 +102,10 @@ public class GlobalKeyListener : IGlobalKeyListener
 		if (Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin))
 			modifiers |= ModifierKeys.Windows;
 
-		// Try to find a plugin matching the current key combination
-		if (_pluginManager.TryGetPlugin(modifiers, key, out var plugin) && plugin != null)
+		// Try to find an action matching the current key combination
+		if (_actionManager.TryGetAction(modifiers, key, out var action) && action != null)
 		{
-			var actionWindow = ActivatorUtilities.CreateInstance<Windows.ActionWindow>(_serviceProvider, plugin);
+			var actionWindow = ActivatorUtilities.CreateInstance<Windows.ActionWindow>(_serviceProvider, action);
 			actionWindow.Show();
 			WindowUtilities.ActivateWindow(actionWindow);
 		}

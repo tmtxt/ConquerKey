@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using ConquerKey.Configuration;
 using ConquerKey.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Application = System.Windows.Application;
@@ -21,11 +22,17 @@ public partial class App : Application
 
 	private void ConfigureServices(IServiceCollection services)
 	{
-		// Create and configure plugin manager
-		var pluginManager = new PluginManager();
-		pluginManager.LoadPlugins();
+		var configManager = new ConfigManager();
 
-		services.AddSingleton(pluginManager);
+		var actionManager = new ActionManager(configManager);
+		actionManager.LoadActions();
+
+		var elementFinderManager = new ElementFinderManager();
+		elementFinderManager.LoadFinders();
+
+		services.AddSingleton(configManager);
+		services.AddSingleton(actionManager);
+		services.AddSingleton(elementFinderManager);
 		services.AddSingleton<MainWindow>();
 		services.AddSingleton<IGlobalKeyListener, GlobalKeyListener>();
 	}
